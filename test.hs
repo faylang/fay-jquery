@@ -7,4 +7,4 @@ import Language.Fay.JQuery
 main :: Fay ()
 main = do
     sameDirAlert
-    asdf "Hello, world!"
+    moduleAlert
