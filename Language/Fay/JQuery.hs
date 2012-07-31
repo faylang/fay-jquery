@@ -38,6 +38,12 @@ ready :: Fay () -> Fay ()
 ready = ffi "jQuery(%1)" FayNone
 
 ----
+---- Ajax
+----
+
+-- TODO
+
+----
 ---- Attributes
 ----
 
@@ -129,7 +135,70 @@ getText = ffi "%1.text()" FayString
 setStyle :: String -> String -> JQuery -> Fay JQuery
 setStyle = ffi "%3.css(%1, %2)" FayNone
 
+----
+---- Core
+----
 
+----
+---- CSS
+----
 
---moduleAlert :: Fay ()
---moduleAlert = ffi "window.alert('But in a qualified module it doesn\\'t.')" FayNone
+----
+---- Data
+----
+
+----
+---- Deferred Object
+----
+
+----
+---- Dimensions
+----
+
+----
+---- Effects
+----
+
+----
+---- Events
+----
+
+----
+---- Forms
+----
+
+----
+---- Internals
+----
+
+----
+---- Manipulation
+----
+
+----
+---- Miscellaneous
+----
+
+----
+---- Offset
+----
+
+----
+---- Plugins
+----
+
+----
+---- Properties
+----
+
+----
+---- Selectors
+----
+
+----
+---- Traversing
+----
+
+----
+---- Utilities
+----
