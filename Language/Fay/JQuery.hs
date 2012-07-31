@@ -18,25 +18,6 @@ instance Foreign Element where
 getThis :: Fay JQuery
 getThis = ffi "this" FayNone
 
--- jQuery()
-selectElement :: Element -> Fay JQuery
-selectElement = ffi "jQuery(%1)" FayNone
-
-selectObject :: (Foreign a) => a -> Fay JQuery
-selectObject = ffi "jQuery(%1)" FayNone
-
-select       :: String -> Fay JQuery
-select       = ffi "jQuery(%1)" FayNone
-
-selectEmpty :: Fay JQuery
-selectEmpty = ffi "jQuery()" FayNone
-
-createJQuery :: (Foreign a) => String -> a -> Fay JQuery
-createJQuery = ffi "jQuery(%1, %2)" FayNone
-
-ready :: Fay () -> Fay ()
-ready = ffi "jQuery(%1)" FayNone
-
 ----
 ---- Ajax
 ----
@@ -138,6 +119,40 @@ setStyle = ffi "%3.css(%1, %2)" FayNone
 ----
 ---- Core
 ----
+
+holdReady :: Bool -> Fay JQuery
+holdReady = ffi "jQuery.holdReady(%1)" FayNone
+
+-- jQuery()
+selectElement :: Element -> Fay JQuery
+selectElement = ffi "jQuery(%1)" FayNone
+
+selectObject :: (Foreign a) => a -> Fay JQuery
+selectObject = ffi "jQuery(%1)" FayNone
+
+select       :: String -> Fay JQuery
+select       = ffi "jQuery(%1)" FayNone
+
+selectEmpty :: Fay JQuery
+selectEmpty = ffi "jQuery()" FayNone
+
+createJQuery :: (Foreign a) => String -> a -> Fay JQuery
+createJQuery = ffi "jQuery(%1, %2)" FayNone
+
+ready :: Fay () -> Fay ()
+ready = ffi "jQuery(%1)" FayNone
+-- end jQuery()
+
+-- is noConflict useful in the context of Fay?
+noConflict :: Fay JQuery
+noConflict = ffi "jQuery.noConflict()" FayNone
+
+noConflictBool :: Bool -> Fay JQuery
+noConflictBool = ffi "jQuery.noConflict(%1)" FayNone
+
+-- TODO: jQuery.sub()
+
+-- TODO: jQuery.when(): figure out Deferred first
 
 ----
 ---- CSS
