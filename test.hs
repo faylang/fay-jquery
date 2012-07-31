@@ -9,15 +9,17 @@ f >=> g     = \x -> f x >>= g
 main :: Fay ()
 main = ready $ do
     p <- select "#replacementParagraph"
-    manipulateP p
+    _ <- manipulateP p
     currentText <- getText p
-    setText (currentText ++ "!!!") p
+    _ <- setText (currentText ++ "!!!") p
     return ()
 
-manipulateClass index currentClass = return $ "Helloclass"
+manipulateClass :: Double -> String -> Fay String
+manipulateClass index _ = return $ "Helloclass-" ++ show index
 
 manipulateP :: JQuery -> Fay JQuery
 manipulateP = setText "It's been replaced!" >=>
               --setStyle "background-color" "red" >=>
               addClass "asdf" >=>
               addClassWith manipulateClass
+                
