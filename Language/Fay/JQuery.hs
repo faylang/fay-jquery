@@ -224,7 +224,7 @@ getWidth = ffi "%1.width()" FayNone
 setWidth :: Double -> JQuery -> Fay JQuery
 setWidth = ffi "%2.width(%1)" FayNone
 
-setWidthWith :: (Double -> Double -> JQuery Double) -> JQuery -> Fay JQuery
+setWidthWith :: (Double -> Double -> Fay Double) -> JQuery -> Fay JQuery
 setWidthWith = ffi "%2.width(%1)" FayNone
 
 
@@ -283,6 +283,221 @@ setWidthWith = ffi "%2.width(%1)" FayNone
 ----
 ---- Traversing
 ----
+
+-- TODO: unify these under a typeclass?
+addSelector :: String -> JQuery -> Fay JQuery
+addSelector = ffi "$2.add(%1)" FayNone
+
+addElement :: Element -> JQuery -> Fay JQuery
+addElement = ffi "%2.add(%1)" FayNone
+
+addHtml :: String -> JQuery -> Fay JQuery
+addHtml = ffi "%2.add(%1)" FayNone
+
+add :: JQuery -> JQuery -> Fay JQuery
+add = ffi "%2.add(%1)" FayNone
+
+addSelectorWithContext :: String -> JQuery -> JQuery -> Fay JQuery
+addSelectorWithContext = ffi "%3.add(%1, %2)" FayNone
+
+andSelf :: JQuery -> Fay JQuery
+andSelf = ffi "%1.andSelf()" FayNone
+
+children :: JQuery -> Fay JQuery
+children = ffi "%1.children()" FayNone
+
+childrenMatching :: String -> JQuery -> Fay JQuery
+childrenMatching = ffi "%2.children(%1)" FayNone
+
+closestSelector :: String -> JQuery -> Fay JQuery
+closestSelector = ffi "%2.closest(%1)" FayNone
+
+-- TODO: is context really a string?
+closestWithContext :: String -> String -> JQuery -> Fay JQuery
+closestWithContext = ffi "%3.closest(%1, %2)" FayNone
+
+closest :: JQuery -> JQuery -> Fay JQuery
+closest = ffi "%2.closest(%1)" FayNone
+
+closestElement :: Element -> JQuery -> Fay JQuery
+closestElement = ffi "%2.closest(%1)" FayNone
+
+-- TODO: include deprecated array-based signature?
+
+contents :: JQuery -> Fay JQuery
+contents = ffi "%1.contents()" FayNone
+
+-- This just isn't cool. Can't we all just use map?
+each :: (Double -> Element -> Bool) -> JQuery -> Fay JQuery
+each = ffi "%2.each(%1)" FayNone
+
+end :: JQuery -> Fay JQuery
+end = ffi "%1.end()" FayNone
+
+eq :: Double -> JQuery -> Fay JQuery
+eq = ffi "%2.eq(%1)" FayNone
+
+filter :: String -> JQuery -> Fay JQuery
+filter = ffi "%2.filter(%1)" FayNone
+
+filterWith :: (Double -> Fay Bool) -> JQuery -> Fay JQuery
+filterWith = ffi "%2.filter(%1)" FayNone
+
+filterElement :: Element -> JQuery -> Fay JQuery
+filterElement = ffi "%2.filter(%1)" FayNone
+
+filterJQuery :: JQuery -> JQuery -> Fay JQuery
+filterJQuery = ffi "%2.filter(%1)" FayNone
+
+find :: String -> JQuery -> Fay JQuery
+find = ffi "%2.find(%1)" FayNone
+
+findJQuery :: JQuery -> JQuery -> Fay JQuery
+findJQuery = ffi "%2.find(%1)" FayNone
+
+findElement :: Element -> JQuery -> Fay JQuery
+findElement = ffi "%2.find(%1)" FayNone
+
+first :: JQuery -> Fay JQuery
+first = ffi "%1.first()" FayNone
+
+has :: String -> JQuery -> Fay JQuery
+has = ffi "%2.find(%1)" FayNone
+
+hasElement :: Element -> JQuery -> Fay JQuery
+hasElement = ffi "%2.find(%1)" FayNone
+
+is :: String -> JQuery -> Fay JQuery
+is = ffi "%2.is(%1)" FayNone
+
+isWith :: (Double -> Bool) -> JQuery -> Fay JQuery
+isWith = ffi "%2.is(%1)" FayNone
+
+isJQuery :: JQuery -> JQuery -> Fay JQuery
+isJQuery = ffi "%2.is(%1)" FayNone
+
+isElement :: Element -> JQuery -> Fay JQuery
+isElement = ffi "%2.is(%1)" FayNone
+
+last :: JQuery -> Fay JQuery
+last = ffi "%1.last()" FayNone
+
+-- FIXME: is the return value of the callback right?
+jQueryMap :: (Double -> Element -> Fay JQuery) -> JQuery -> Fay JQuery
+jQueryMap = ffi "%2.map(%1)" FayNone
+
+next :: JQuery -> Fay JQuery
+next = ffi "%1.next()" FayNone
+
+nextSelector :: String -> JQuery -> Fay JQuery
+nextSelector = ffi "%2.next(%1)" FayNone
+
+nextAll :: JQuery -> Fay JQuery
+nextAll = ffi "%1.nextAll()" FayNone
+
+nextAllSelector :: String -> JQuery -> Fay JQuery
+nextAllSelector = ffi "%2.nextAll(%1)" FayNone
+
+nextUntil :: String -> JQuery -> Fay JQuery
+nextUntil = ffi "%2.nextUntil(%1)" FayNone
+
+nextUntilFiltered :: String -> String -> JQuery -> Fay JQuery
+nextUntilFiltered = ffi "%3.nextUntil(%1, %2)" FayNone
+
+nextUntilElement :: Element -> JQuery -> Fay JQuery
+nextUntilElement = ffi "%2.nextUntil(%1)" FayNone
+
+nextUntilElementFiltered :: Element -> String -> JQuery -> Fay JQuery
+nextUntilElementFiltered = ffi "%3.nextUntil(%1, %2)" FayNone
+
+not :: String -> JQuery -> Fay JQuery
+not = ffi "%2.not(%1)" FayNone
+
+notElement :: Element -> JQuery -> Fay JQuery
+notElement = ffi "%2.not(%1)" FayNone
+
+notElements :: [Element] -> JQuery -> Fay JQuery
+notElements = ffi "%2.not(%1)" FayNone
+
+notWith :: (Double -> Bool) -> JQuery -> Fay JQuery
+notWith = ffi "%2.not(%1)" FayNone
+
+notJQuery :: JQuery -> JQuery -> Fay JQuery
+notJQuery = ffi "%2.not(%1)" FayNone
+
+offsetParent :: JQuery -> Fay JQuery
+offsetParent = ffi "%1.offsetParent()" FayNone
+
+parent :: JQuery -> Fay JQuery
+parent = ffi "%1.parent()" FayNone
+
+parentSelector :: String -> JQuery -> Fay JQuery
+parentSelector = ffi "%2.parent(%1)" FayNone
+
+parents :: JQuery -> Fay JQuery
+parents = ffi "%1.parents()" FayNone
+
+parentsSelector :: String -> JQuery -> Fay JQuery
+parentsSelector = ffi "%2.parents(%1)" FayNone
+
+parentsUntil :: String -> JQuery -> Fay JQuery
+parentsUntil = ffi "%2.parentsUntil(%1)" FayNone
+
+parentsUntilFiltered :: String -> String -> JQuery -> Fay JQuery
+parentsUntilFiltered = ffi "%3.parentsUntil(%1, %2)" FayNone
+
+parentsUntilElement :: Element -> JQuery -> Fay JQuery
+parentsUntilElement = ffi "%2.parentsUntil(%1)" FayNone
+
+parentsUntilElementFiltered :: Element -> String -> JQuery -> Fay JQuery
+parentsUntilElementFiltered = ffi "%3.parentsUntil(%1, %2)" FayNone
+
+prev :: JQuery -> Fay JQuery
+prev = ffi "%1.prev()" FayNone
+
+prevSelector :: String -> JQuery -> Fay JQuery
+prevSelector = ffi "%2.prev(%1)" FayNone
+
+prevAll :: JQuery -> Fay JQuery
+prevAll = ffi "%1.prevAll()" FayNone
+
+prevAllSelector :: String -> JQuery -> Fay JQuery
+prevAllSelector = ffi "%2.prevAll(%1)" FayNone
+
+prevUntil :: String -> JQuery -> Fay JQuery
+prevUntil = ffi "%2.prevUntil(%1)" FayNone
+
+prevUntilFiltered :: String -> String -> JQuery -> Fay JQuery
+prevUntilFiltered = ffi "%3.prevUntil(%1, %2)" FayNone
+
+prevUntilElement :: Element -> JQuery -> Fay JQuery
+prevUntilElement = ffi "%2.prevUntil(%1)" FayNone
+
+prevUntilElementFiltered :: Element -> String -> JQuery -> Fay JQuery
+prevUntilElementFiltered = ffi "%3.prevUntil(%1, %2)" FayNone
+
+siblings :: JQuery -> Fay JQuery
+siblings = ffi "%1.siblings()" FayNone
+
+siblingsSelector :: String -> JQuery -> Fay JQuery
+siblingsSelector = ffi "%2.siblings(%1)" FayNone
+
+slice :: Double -> JQuery -> Fay JQuery
+slice = ffi "%2.slice(%1)" FayNone
+
+sliceFromTo :: Double -> Double -> JQuery -> Fay JQuery
+sliceFromTo = ffi "%3.slice(%1, %2)" FayNone
+
+
+
+
+
+
+
+-- vim implementation shortcut
+-- inoremap <F6> <ESC>:normal 0ywo<ESC>pa= ffi "" FayNone<ESC>F"i
+
+
 
 ----
 ---- Utilities
