@@ -5,9 +5,9 @@ jQuery bindings for Fay. This project is experimental and not suitable for
 production purposes.
 
 The short-term goals of this project are to help discover the real world
-requirements of Fay and to invite bikeshedding over the API. That means that
-names and types may change in rapid and annoying ways until conventions settle
-down.
+requirements of Fay and to invite bikeshedding over the fay-jquery API. That
+means that names and types may change in rapid and annoying ways until
+conventions settle down.
 
 The one consistent convention in the library is that the jQuery object on which
 methods operate is the *last* parameter to every function. This allows simple
