@@ -110,6 +110,9 @@ setValWith = ffi "%2.val(%1)"
 setText :: String -> JQuery -> Fay JQuery
 setText = ffi "%2.text(%1)"
 
+setTextWith :: (Double -> String -> Fay JQuery) -> JQuery -> Fay JQuery
+setTextWith = ffi "%2.text(%1)"
+
 getText :: JQuery -> Fay String
 getText = ffi "%1.text()"
 
@@ -255,6 +258,105 @@ setWidthWith = ffi "%2.width(%1)"
 ----
 ---- Manipulation
 ----
+
+-- Is there a better way to constrain the type here?
+after :: (Foreign a) => a -> JQuery -> Fay JQuery
+after = ffi "%2.after(%1)"
+
+afterWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
+afterWith = ffi "%2.after(%1)"
+
+append :: (Foreign a) => a -> JQuery -> Fay JQuery
+append = ffi "%2.append(%1)"
+
+appendWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
+appendWith = ffi "%2.append(%1)"
+
+appendTo :: (Foreign a) => a -> JQuery -> Fay JQuery
+appendTo = ffi "%2.appendTo(%1)"
+
+before :: (Foreign a) => a -> JQuery -> Fay JQuery
+before = ffi "%2.before(%1)"
+
+beforeWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
+beforeWith = ffi "%2.before(%1)"
+
+data CloneType = WithoutDataAndEvents | WithDataAndEvents | DeepWithDataAndEvents
+
+clone :: CloneType -> JQuery -> Fay JQuery
+clone WithoutDataAndEvents  = ffi "%2.clone(false)"
+clone WithDataAndEvents     = ffi "%2.clone(true, false)"
+clone DeepWithDataAndEvents = ffi "%2.clone(true, true)"
+
+detach :: JQuery -> Fay JQuery
+detach = ffi "%1.detach()"
+
+detachSelector :: String -> JQuery -> Fay JQuery
+detachSelector = ffi "%2.detach(%1)"
+
+empty :: JQuery -> Fay JQuery
+empty = ffi "%1.empty()"
+
+insertAfter :: (Foreign a) => a -> JQuery -> Fay JQuery
+insertAfter = ffi "%2.insertAfter(%1)"
+
+insertBefore :: (Foreign a) => a -> JQuery -> Fay JQuery
+insertBefore = ffi "%2.insertBefore(%1)"
+
+prepend :: (Foreign a) => a -> JQuery -> Fay JQuery
+prepend = ffi "%2.prepend(%1)"
+
+prependWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
+prependWith = ffi "%2.prepend(%1)"
+
+prependTo :: (Foreign a) => a -> JQuery -> Fay JQuery
+prependTo = ffi "%2.prependTo(%1)"
+
+remove :: JQuery -> Fay JQuery
+remove = ffi "%1.remove()"
+
+removeSelector :: String -> JQuery -> Fay JQuery
+removeSelector = ffi "%2.remove(%1)"
+
+replaceAll :: String -> JQuery -> Fay JQuery
+replaceAll = ffi "%2.replaceAll(%1)"
+
+-- FIXME: create other forms of replaceWith
+replaceWith :: String -> JQuery -> Fay JQuery
+replaceWith = ffi "%2.replaceWith(%1)"
+
+-- FIXME: this name matches convention, but it's kind of silly
+replaceWithWith :: (Fay JQuery) -> JQuery -> Fay JQuery
+replaceWithWith = ffi "%2.replaceWith(%1)"
+
+unwrap :: JQuery -> Fay JQuery
+unwrap = ffi "%1.unwrap()"
+
+-- FIXME: create other forms of wrap
+wrap :: String -> JQuery -> Fay JQuery
+wrap = ffi "%2.wrap(%1)"
+
+wrapWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
+wrapWith = ffi "%2.wrap(%1)"
+
+wrapAllHtml :: String -> JQuery -> Fay JQuery
+wrapAllHtml = ffi "%2.wrapAll(%1)"
+
+wrapAllSelector :: String -> JQuery -> Fay JQuery
+wrapAllSelector = ffi "%2.wrapAll(%1)"
+
+wrapAllElement :: Element -> JQuery -> Fay JQuery
+wrapAllElement = ffi "%2.wrapAll(%1)"
+
+wrapInnerHtml :: String -> JQuery -> Fay JQuery
+wrapInnerHtml = ffi "%2.wrapInner(%1)"
+
+wrapInnerSelector :: String -> JQuery -> Fay JQuery
+wrapInnerSelector = ffi "%2.wrapInner(%1)"
+
+wrapInnerElement :: Element -> JQuery -> Fay JQuery
+wrapInnerElement = ffi "%2.wrapInner(%1)"
+
 
 ----
 ---- Miscellaneous
