@@ -13,7 +13,7 @@ The one consistent convention in the library is that the jQuery object on which
 methods operate is the *last* parameter to every function. This allows simple
 monadic composition:
 
-```
+```haskell
 makeSquare :: JQuery -> Fay JQuery
 makeSquare = addClass "square" >=>
              setWidth 400 >=>
