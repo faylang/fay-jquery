@@ -35,6 +35,7 @@ docs. There is some overlap in the sections, but the following sections are
 - Attributes
 - Core
 - CSS
+- Manipulation
 - Traversing
 
 Still to do
@@ -47,10 +48,13 @@ Still to do
 - Events
 - Forms
 - Internals
-- Manipulation
 - Miscellaneous
 - Offset
 - Plugins
 - Properties
-- Selectors
 - Utilities
+
+Not Applicable
+--------------
+
+- Selectors

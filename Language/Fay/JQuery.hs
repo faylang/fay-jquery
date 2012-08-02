@@ -269,11 +269,20 @@ afterWith = ffi "%2.after(%1)"
 append :: (Foreign a) => a -> JQuery -> Fay JQuery
 append = ffi "%2.append(%1)"
 
+appendJQuery :: JQuery -> JQuery -> Fay JQuery
+appendJQuery = ffi "%2.append(%1)"
+
+
 appendWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 appendWith = ffi "%2.append(%1)"
 
 appendTo :: (Foreign a) => a -> JQuery -> Fay JQuery
 appendTo = ffi "%2.appendTo(%1)"
+
+appendToJQuery :: JQuery -> JQuery -> Fay JQuery
+appendToJQuery = ffi "%2.appendTo(%1)"
+
+
 
 before :: (Foreign a) => a -> JQuery -> Fay JQuery
 before = ffi "%2.before(%1)"
@@ -324,6 +333,9 @@ replaceAll = ffi "%2.replaceAll(%1)"
 -- FIXME: create other forms of replaceWith
 replaceWith :: String -> JQuery -> Fay JQuery
 replaceWith = ffi "%2.replaceWith(%1)"
+
+replaceWithJQuery :: JQuery -> JQuery -> Fay JQuery
+replaceWithJQuery = ffi "%2.replaceWith(%1)"
 
 -- FIXME: this name matches convention, but it's kind of silly
 replaceWithWith :: (Fay JQuery) -> JQuery -> Fay JQuery
@@ -447,8 +459,9 @@ filterElement = ffi "%2.filter(%1)"
 filterJQuery :: JQuery -> JQuery -> Fay JQuery
 filterJQuery = ffi "%2.filter(%1)"
 
-find :: String -> JQuery -> Fay JQuery
-find = ffi "%2.find(%1)"
+-- FIXME: not called find because Fay doesn't seem to deal well with name conflicts yet
+findSelector :: String -> JQuery -> Fay JQuery
+findSelector = ffi "%2.find(%1)"
 
 findJQuery :: JQuery -> JQuery -> Fay JQuery
 findJQuery = ffi "%2.find(%1)"
@@ -460,10 +473,10 @@ first :: JQuery -> Fay JQuery
 first = ffi "%1.first()"
 
 has :: String -> JQuery -> Fay JQuery
-has = ffi "%2.find(%1)"
+has = ffi "%2.has(%1)"
 
 hasElement :: Element -> JQuery -> Fay JQuery
-hasElement = ffi "%2.find(%1)"
+hasElement = ffi "%2.has(%1)"
 
 is :: String -> JQuery -> Fay JQuery
 is = ffi "%2.is(%1)"
