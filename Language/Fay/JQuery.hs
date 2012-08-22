@@ -1,3 +1,6 @@
+{-# LANGUAGE EmptyDataDecls    #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Language.Fay.JQuery  where
 
 {--
@@ -5,8 +8,8 @@ Note that this is very much in flux. Function names, type signatures, and
 data types all subject to drastic change.
 --}
 
-import Language.Fay.Prelude
-import Language.Fay.FFI
+import           Language.Fay.FFI
+import           Language.Fay.Prelude
 
 data JQuery
 instance Foreign JQuery where
@@ -77,7 +80,7 @@ removeAttr = ffi "%2.removeAttr(%1)"
 removeClass :: String -> JQuery -> Fay JQuery
 removeClass = ffi "%2.removeClass(%1)"
 
-removeClassWith :: (Double -> String -> Fay JQuery) -> JQuery -> Fay JQuery 
+removeClassWith :: (Double -> String -> Fay JQuery) -> JQuery -> Fay JQuery
 removeClassWith = ffi "%2.removeClass(%1)"
 
 removeProp :: String -> JQuery -> Fay JQuery
@@ -183,10 +186,10 @@ getInnerWidth :: JQuery -> Fay Double
 getInnerWidth = ffi "%1.innerWidth()"
 
 -- TODO: figure out how to marshal coordinates
---getOffset :: JQuery -> Fay 
+--getOffset :: JQuery -> Fay
 --getOffset = ffi "%1.offset()"
 
---setOffset 
+--setOffset
 --setOffsetWith
 
 -- TODO: css with map
