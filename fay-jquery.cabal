@@ -1,0 +1,20 @@
+name:                fay-jquery
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/brianhv/fay-jquery
+bug-reports:         https://github.com/brianhv/fay-jquery/issues
+-- license:
+--license-file:        LICENSE
+author:              Brian Victor
+ maintainer:         Brian Victor
+-- copyright:
+build-type:          Simple
+cabal-version:       >=1.8
+
+data-files:
+  Language/Fay/JQuery.hs
+
+library
+  other-modules: Language.Fay.JQuery
+  build-depends: fay

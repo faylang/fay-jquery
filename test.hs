@@ -61,7 +61,7 @@ isDivisibleBy num divisor = if num == 0 then True
 zebraStripeRows :: Double -> String -> Fay String
 zebraStripeRows index _ = return $ if isDivisibleBy index 2 then "odd" else "even"
 
-addZebraStriping = JQuery -> Fay JQuery
+addZebraStriping :: JQuery -> Fay JQuery
 addZebraStriping table = do
     --addClassWith zebraStripeRows rows
     evenRows <- findSelector "tr:even" table
