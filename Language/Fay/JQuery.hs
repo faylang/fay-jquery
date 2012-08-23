@@ -396,7 +396,7 @@ wrapInnerElement = ffi "%2.wrapInner(%1)"
 
 -- TODO: unify these under a typeclass?
 addSelector :: String -> JQuery -> Fay JQuery
-addSelector = ffi "$2.add(%1)"
+addSelector = ffi "%2.add(%1)"
 
 addElement :: Element -> JQuery -> Fay JQuery
 addElement = ffi "%2.add(%1)"
