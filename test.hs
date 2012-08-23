@@ -1,16 +1,18 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Test (main) where
 
-import Language.Fay.Prelude hiding (return, ($), (.), (>>=), (++), map, foldr, find)
+import Language.Fay.Prelude
 import Language.Fay.JQuery
 import Language.Fay.FFI
 
-(>=>)       :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
+(>=>)       :: (a -> Fay b) -> (b -> Fay c) -> (a -> Fay c)
 f >=> g     = \x -> f x >>= g
 
-myMapM            :: Monad m => (a -> m b) -> [a] -> m [b]
+myMapM            :: (a -> Fay b) -> [a] -> Fay [b]
 myMapM f as       =  mySequence (map f as)
 
-mySequence    :: Monad m => [m a] -> m [a]
+mySequence    :: [Fay a] -> Fay [a]
 mySequence ms = let k m m' = do { x <- m; xs <- m'; return (x:xs) } in
                 foldr k (return []) ms
 
