@@ -1,2 +1,5 @@
 cabal-dev
 dist
+*.hi
+*.o
+*.js

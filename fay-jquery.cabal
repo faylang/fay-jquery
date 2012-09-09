@@ -16,5 +16,5 @@ data-files:
   Language/Fay/JQuery.hs
 
 library
-  other-modules: Language.Fay.JQuery
+  exposed-modules: Language.Fay.JQuery
   build-depends: fay

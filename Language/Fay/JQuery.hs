@@ -1,7 +1,7 @@
 {-# LANGUAGE EmptyDataDecls    #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Language.Fay.JQuery  where
+module Language.Fay.JQuery where
 
 {--
 Note that this is very much in flux. Function names, type signatures, and
