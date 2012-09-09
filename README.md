@@ -25,6 +25,17 @@ main = do
     return ()
 ```
 
+Usage
+-----
+
+To use this with fay, cabal install the package which will put the
+source files in fay ~/.cabal/share/fay-jquery-0.1.0.0. You can then
+compile with fay using
+
+```
+fay --include=~/.cabal/share/fay-jquery-0.1.0.0 MyFile.hs
+```
+
 Supported API calls
 -------------------
 
