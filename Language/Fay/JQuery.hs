@@ -441,7 +441,7 @@ contents :: JQuery -> Fay JQuery
 contents = ffi "%1.contents()"
 
 -- This just isn't cool. Can't we all just use map?
-each :: (Double -> Element -> Bool) -> JQuery -> Fay JQuery
+each :: (Double -> Element -> Fay Bool) -> JQuery -> Fay JQuery
 each = ffi "%2.each(%1)"
 
 end :: JQuery -> Fay JQuery
