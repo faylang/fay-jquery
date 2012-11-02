@@ -247,8 +247,53 @@ setWidthWith = ffi "%2.width(%1)"
 ----
 
 ----
----- Events
+---- Events Listeners
 ----
+
+----
+---- Event Object
+----
+
+-- event.data skipped
+
+data Event
+instance Foreign Event
+
+delegateTarget :: Event -> Fay Element
+delegateTarget = ffi "window.jQuery(%1.delegateTarget)"
+
+isDefaultPrevented :: Event -> Fay Bool
+isDefaultPrevented = ffi "%1.isDefaultPrevented()"
+
+isImmediatePropagationStopped :: Event -> Fay Bool
+isImmediatePropagationStopped = ffi "%1.isImmediatePropagationStopped()"
+
+isPropagationStopped :: Event -> Fay Element
+isPropagationStopped = ffi "%1.isPropagationStopped()"
+
+namespace :: Event -> Fay String
+namespace = ffi "%1.namespace"
+
+pageX :: Event -> Fay Double
+pageX = ffi "%1.pageX"
+
+pageY :: Event -> Fay Double
+pageY = ffi "%1.pageY"
+
+preventDefault :: Event -> Fay ()
+preventDefault = ffi "%1.preventDefault()"
+
+target :: Event -> Fay Element
+target = ffi "%1.target"
+
+timeStamp :: Event -> Fay Double
+timeStamp = ffi "%1.timeStamp"
+
+eventType :: Event -> Fay String
+eventType = ffi "%1.type"
+
+which :: Event -> Fay Int
+which = ffi "%1.which"
 
 ----
 ---- Forms
