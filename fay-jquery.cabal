@@ -17,4 +17,6 @@ data-files:
 
 library
   exposed-modules: Language.Fay.JQuery
-  build-depends: fay
+                   Paths_fay_jquery
+  build-depends: base,
+                 fay
