@@ -16,7 +16,17 @@ instance Foreign JQuery where
 
 -- Things that I wish were in the Fay library
 data Element
-instance Foreign Element where
+instance Foreign Element
+
+data Document
+instance Foreign Document
+
+data Window
+instance Foreign Window
+
+type EventType = String
+
+type Selector = String
 
 getThis :: Fay JQuery
 getThis = ffi "this"
@@ -133,8 +143,8 @@ selectElement = ffi "jQuery(%1)"
 selectObject :: (Foreign a) => a -> Fay JQuery
 selectObject = ffi "jQuery(%1)"
 
-select       :: String -> Fay JQuery
-select       = ffi "jQuery(%1)"
+select :: String -> Fay JQuery
+select = ffi "jQuery(%1)"
 
 selectEmpty :: Fay JQuery
 selectEmpty = ffi "jQuery()"
@@ -247,12 +257,116 @@ setWidthWith = ffi "%2.width(%1)"
 ----
 
 ----
----- Events Listeners
+---- Events
 ----
 
-----
----- Event Object
-----
+--
+-- Browser Events
+--
+
+-- Skip error(), deprecated
+
+resize :: (Event -> Fay ()) -> JQuery -> Fay ()
+resize = ffi "%2.resize(%1)"
+
+scroll :: (Event -> Fay ()) -> JQuery -> Fay ()
+scroll = ffi "%2.scroll(%1)"
+
+--
+-- Document Loading
+--
+
+load :: (Event -> Fay()) -> JQuery -> Fay ()
+load = ffi "%2.load(%1)"
+
+documentReady :: (Event -> Fay ()) -> Document -> Fay ()
+documentReady = ffi "jQuery(%2).ready(%1)"
+
+unload :: (Event -> Fay()) -> Window -> Fay ()
+unload = ffi "jQuery(%2).unload(%1)"
+
+--
+-- Mouse Events
+--
+
+click :: (Event -> Fay ()) -> JQuery -> Fay ()
+click = ffi "%2.click(%1)"
+
+dblclick :: (Event -> Fay ()) -> JQuery -> Fay ()
+dblclick = ffi "%2.dblclick(%1)"
+
+focusin :: (Event -> Fay ()) -> JQuery -> Fay ()
+focusin = ffi "%2.focusin(%1)"
+
+focusout :: (Event -> Fay ()) -> JQuery -> Fay ()
+focusout = ffi "%2.focusout(%1)"
+
+hover :: (Event -> Fay ()) -> JQuery -> Fay ()
+hover = ffi "%2.hover(%1)"
+
+mousedown :: (Event -> Fay ()) -> JQuery -> Fay ()
+mousedown = ffi "%2.mousedown(%1)"
+
+mouseenter :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseenter = ffi "%2.mouseenter(%1)"
+
+mouseleave :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseleave = ffi "%2.mouseleave(%1)"
+
+mousemove :: (Event -> Fay ()) -> JQuery -> Fay ()
+mousemove = ffi "%2.mousemove(%1)"
+
+mouseout :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseout = ffi "%2.mouseout(%1)"
+
+mouseover :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseover = ffi "%2.mouseover(%1)"
+
+mouseup :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseup = ffi "%2.mouseup(%1)"
+
+-- Argument splat since an arbitrary number of events can be attached.
+toggle :: [Event -> Fay ()] -> JQuery -> Fay ()
+toggle = ffi "%2.toggle.apply(%2, %1)"
+
+
+--
+-- Event Handler Attachment
+--
+
+bind :: EventType -> (Event -> Fay ()) -> JQuery -> Fay ()
+bind = ffi "%3.bind(%1, %2)"
+
+bindPreventBubble :: EventType -> (Event -> Fay ()) -> JQuery -> Fay ()
+bindPreventBubble = ffi "%3.bind(%1,%2,false)"
+
+-- delegate() superceeded by on()
+-- die() deprecated
+-- live() deprecated
+-- off() TODO how should this be handled?
+
+on :: EventType -> (Event -> Fay ()) -> JQuery -> Fay ()
+on = ffi "%3.on(%1, %2)"
+
+onDelegate :: EventType -> Selector -> (Event -> Fay()) -> JQuery -> Fay ()
+onDelegate = ffi "%4.on(%1,%2,%3)"
+
+one :: EventType -> (Event -> Fay ()) -> JQuery -> Fay ()
+one = ffi "%3.one(%1, %2)"
+
+trigger :: EventType -> JQuery -> Fay ()
+trigger = ffi "%2.trigger(%1)"
+
+triggerHandler :: EventType -> JQuery -> Fay ()
+triggerHandler = ffi "%2.triggerHandler(%1)"
+
+
+-- unbind() not useful in Fay?
+-- undelegate() not useful in Fay?
+
+--
+-- Event Object
+--
 
 -- event.data skipped
 
@@ -260,7 +374,7 @@ data Event
 instance Foreign Event
 
 delegateTarget :: Event -> Fay Element
-delegateTarget = ffi "window.jQuery(%1.delegateTarget)"
+delegateTarget = ffi "jQuery(%1.delegateTarget)"
 
 isDefaultPrevented :: Event -> Fay Bool
 isDefaultPrevented = ffi "%1.isDefaultPrevented()"
@@ -294,6 +408,39 @@ eventType = ffi "%1.type"
 
 which :: Event -> Fay Int
 which = ffi "%1.which"
+
+--
+-- Form Events
+--
+
+blur :: (Event -> Fay ()) -> JQuery -> Fay ()
+blur = ffi "%2.blur(%1)"
+
+change :: (Event -> Fay ()) -> JQuery -> Fay ()
+change = ffi "%2.change(%1)"
+
+focus :: (Event -> Fay ()) -> JQuery -> Fay ()
+focus = ffi "%2.focus(%1)"
+
+-- TODO select would with the other select definition, should it be renamed?
+onselect :: (Event -> Fay ()) -> JQuery -> Fay ()
+onselect = ffi "%2.select(%1)"
+
+submit  :: (Event -> Fay ()) -> JQuery -> Fay ()
+submit = ffi "%2.submit(%1)"
+
+--
+-- Keyboard Events
+--
+
+keydown :: (Event -> Fay ()) -> JQuery -> Fay ()
+keydown = ffi "%2.keydown(%1)"
+
+keypress :: (Event -> Fay ()) -> JQuery -> Fay ()
+keypress = ffi "%2.keypress(%1)"
+
+keyup :: (Event -> Fay ()) -> JQuery -> Fay ()
+keyup = ffi "%2.keyup(%1)"
 
 ----
 ---- Forms
