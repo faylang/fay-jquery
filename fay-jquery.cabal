@@ -2,8 +2,8 @@ name:                fay-jquery
 version:             0.1.0.0
 -- synopsis:
 -- description:
-homepage:            https://github.com/brianhv/fay-jquery
-bug-reports:         https://github.com/brianhv/fay-jquery/issues
+homepage:            https://github.com/faylang/fay-jquery
+bug-reports:         https://github.com/faylang/fay-jquery/issues
 -- license:
 --license-file:        LICENSE
 author:              Brian Victor
