@@ -12,7 +12,10 @@ import           Language.Fay.FFI
 import           Language.Fay.Prelude
 
 data JQuery
-instance Foreign JQuery where
+instance Foreign JQuery
+
+data JQXHR
+instance Foreign JQXHR
 
 -- Things that I wish were in the Fay library
 data Element
@@ -35,7 +38,76 @@ getThis = ffi "this"
 ---- Ajax
 ----
 
--- TODO
+-- This section probably incomplete, but it's a good start.
+--
+-- The success and error handlers have arguments that may be
+-- unnecessary in your application, in that case it might be best to
+-- define your own helpers that ignore these.
+--
+-- The success handler's type is:
+-- (  f      -- data
+-- -> String -- textStatus
+-- -> JQXHR  -- jqXHR
+--
+-- The error handler's type is:
+-- (  JQXHR  -- jqXHR
+-- -> String -- textStatus
+-- -> String -- errorThrown
+--
+-- Warning: the textStatus String can be null, how do we handle it?
+
+ajax :: String -> Fay () -> Fay () -> Fay ()
+ajax = ffi "jQuery.ajax(%1, { success: %2, error: %3 })"
+
+ajaxForeign :: Foreign f
+  => String -- url
+  -> (f -> String -> JQXHR -> Fay ()) -- success
+  -> (JQXHR -> String -> String -> Fay ()) -- error
+  -> Fay ()
+ajaxForeign = ffi "jQuery.ajax(%1, { success: %2, error: %3 })"
+
+ajaxString :: Foreign f
+  => String -- url
+  -> (f -> String -> JQXHR -> Fay ()) -- success
+  -> (JQXHR -> String -> String -> Fay ()) -- error
+  -> Fay ()
+ajaxString = ffi "jQuery.ajax(%1, { success: %2, error: %3 })"
+
+-- Serializes the given object to JSON and passes it as the request body without request parameters.
+-- The response is deserialized depending on its type.
+ajaxPost :: (Foreign f, Foreign g)
+  => String -- url
+  -> f -- data
+  -> (g -> String -> JQXHR -> Fay ()) -- success
+  -> (JQXHR -> String -> String -> Fay ()) -- error
+  -> Fay ()
+ajaxPost = ffi "jQuery.ajax({\
+  \ url: %1, \
+  \ data: JSON.stringify(%2), \
+  \ success: %3, \
+  \ error: %4, \
+  \ type: 'POST', \
+  \ processData: false, \
+  \ contentType: 'text/json', \
+  \ dataType: 'json' \
+  \})"
+
+-- Same as ajaxPost but sends the data inside the given request parameter
+ajaxPostParam :: (Foreign f, Foreign g)
+  => String -- url
+  -> String -- request parameter
+  -> f -- data
+  -> (g -> String -> JQXHR -> Fay ()) -- success
+  -> (JQXHR -> String -> String -> Fay ()) -- error
+  -> Fay ()
+ajaxPostParam = ffi "jQuery.ajax({\
+  \ url: '%1', \
+  \ data: { '%2': JSON.stringify(%3) }, \
+  \ success: %4, \
+  \ error: %5, \
+  \ type: 'POST', \
+  \ dataType: 'json' \
+  \})"
 
 ----
 ---- Attributes
@@ -256,6 +328,38 @@ setWidthWith = ffi "%2.width(%1)"
 ---- Effects
 ----
 
+--
+-- Basics
+--
+
+hide       :: Double -> JQuery -> Fay ()
+hide = ffi "$(%1).hide(%2)"
+
+hideSlow   :: JQuery -> Fay ()
+hideSlow = ffi "$(%1).hide('slow')"
+
+hideFast   :: JQuery -> Fay ()
+hideFast = ffi "$(%1).hide('fast')"
+
+show       :: Double -> JQuery -> Fay ()
+show = ffi "$(%2).show(%1)"
+
+showSlow   :: JQuery -> Fay ()
+showSlow = ffi "$(%1).show('slow')"
+
+showFast   :: JQuery -> Fay ()
+showFast = ffi "$(%1).show('fast')"
+
+toggle     :: Double -> JQuery -> Fay ()
+toggle = ffi "$(%2).toggle(%1)"
+
+toggleSlow :: JQuery -> Fay ()
+toggleSlow = ffi "$(%1).toggle('slow')"
+
+toggleFast :: JQuery -> Fay ()
+toggleFast = ffi "$(%1).toggle('fast')"
+
+
 ----
 ---- Events
 ----
@@ -326,8 +430,9 @@ mouseup :: (Event -> Fay ()) -> JQuery -> Fay ()
 mouseup = ffi "%2.mouseup(%1)"
 
 -- Argument splat since an arbitrary number of events can be attached.
-toggle :: [Event -> Fay ()] -> JQuery -> Fay ()
-toggle = ffi "%2.toggle.apply(%2, %1)"
+-- `toggle` in jQuery but clashes with the `toggle` animation.
+toggleEvents :: [Event -> Fay ()] -> JQuery -> Fay ()
+toggleEvents = ffi "%2.toggle.apply(%2, %1)"
 
 
 --
@@ -422,7 +527,7 @@ change = ffi "%2.change(%1)"
 focus :: (Event -> Fay ()) -> JQuery -> Fay ()
 focus = ffi "%2.focus(%1)"
 
--- TODO select would with the other select definition, should it be renamed?
+-- TODO `select` would clash with the other select definition, should it be renamed?
 onselect :: (Event -> Fay ()) -> JQuery -> Fay ()
 onselect = ffi "%2.select(%1)"
 
