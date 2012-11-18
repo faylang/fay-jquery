@@ -332,32 +332,47 @@ setWidthWith = ffi "%2.width(%1)"
 -- Basics
 --
 
-hide       :: Double -> JQuery -> Fay ()
-hide = ffi "$(%1).hide(%2)"
+hide       :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
+hide = ffi "%3.hide(%1,function() { %2(this); })"
 
-hideSlow   :: JQuery -> Fay ()
-hideSlow = ffi "$(%1).hide('slow')"
+hideSlow   :: (Element -> Fay ()) -> JQuery -> Fay ()
+hideSlow = ffi "%2.hide('slow', function () { %1(this); })"
 
-hideFast   :: JQuery -> Fay ()
-hideFast = ffi "$(%1).hide('fast')"
+hideFast   :: (Element -> Fay ()) -> JQuery -> Fay ()
+hideFast = ffi "%2.hide('fast', function () { %1(this); })"
 
-show       :: Double -> JQuery -> Fay ()
-show = ffi "$(%2).show(%1)"
+show       :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
+show = ffi "%3.show(%1, function () { %2(this); })"
 
-showSlow   :: JQuery -> Fay ()
-showSlow = ffi "$(%1).show('slow')"
+showSlow   :: (Element -> Fay ()) -> JQuery -> Fay ()
+showSlow = ffi "%2.show('slow', function () { %1(this); })"
 
-showFast   :: JQuery -> Fay ()
-showFast = ffi "$(%1).show('fast')"
+showFast   :: (Element -> Fay ()) -> JQuery -> Fay ()
+showFast = ffi "%2.show('fast', function () { %1(this); })"
 
-toggle     :: Double -> JQuery -> Fay ()
-toggle = ffi "$(%2).toggle(%1)"
+toggle     :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
+toggle = ffi "%3.toggle(%1, function () { %2(this); })"
 
-toggleSlow :: JQuery -> Fay ()
-toggleSlow = ffi "$(%1).toggle('slow')"
+toggleSlow :: (Element -> Fay ()) -> JQuery -> Fay ()
+toggleSlow = ffi "%2.toggle('slow', function () { %1(this); })"
 
-toggleFast :: JQuery -> Fay ()
-toggleFast = ffi "$(%1).toggle('fast')"
+toggleFast :: (Element -> Fay ()) -> JQuery -> Fay ()
+toggleFast = ffi "%2.toggle('fast', function () { %1(this); })"
+
+--
+-- Fading
+--
+
+--fadeIn      :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
+--fadeInSlow  :: (Element -> Fay ()) -> JQuery -> Fay ()
+--fadeInFast  :: (Element -> Fay ()) -> JQuery -> Fay ()
+--fadeOut     :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
+--fadeOutSlow :: (Element -> Fay ()) -> JQuery -> Fay ()
+--fadeOutFast :: (Element -> Fay ()) -> JQuery -> Fay ()
+--fadeTo      :: Double -> String -> (Element -> Fay ()) -> JQuery -> Fay ()
+--fadeToSlow  :: String -> (Element -> Fay ()) -> JQuery -> Fay ()
+--fadeToFast  :: String -> (Element -> Fay ()) -> JQuery -> Fay ()
+--fadeToggle  :: String -> (Element -> Fay ()) -> JQuery -> Fay ()
 
 
 ----
