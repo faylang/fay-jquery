@@ -1,5 +1,6 @@
 {-# LANGUAGE EmptyDataDecls    #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE RankNTypes        #-}
 
 module Language.Fay.JQuery where
 
@@ -17,7 +18,12 @@ instance Foreign JQuery
 data JQXHR
 instance Foreign JQXHR
 
--- Things that I wish were in the Fay library
+type EventType = String
+
+type Selector = String
+
+
+-- Things that should go in fay or fay-dom
 data Element
 instance Foreign Element
 
@@ -27,87 +33,150 @@ instance Foreign Document
 data Window
 instance Foreign Window
 
-type EventType = String
+data Object
+instance Foreign Object
 
-type Selector = String
 
-getThis :: Fay JQuery
-getThis = ffi "this"
+jsonStringify :: Foreign a => a -> String
+jsonStringify = ffi "JSON.stringify(%1)"
+
+jsonParse :: Foreign b
+  => String
+  -> String -- The name of the record/constructor, needed to decode.
+  -> b
+jsonParse = ffi "(function () { var o = JSON.parse(%2); o.instance = '%1'; return o; })()"
 
 ----
 ---- Ajax
 ----
 
--- This section probably incomplete, but it's a good start.
---
--- The success and error handlers have arguments that may be
--- unnecessary in your application, in that case it might be best to
--- define your own helpers that ignore these.
---
--- The success handler's type is:
--- (  f      -- data
--- -> String -- textStatus
--- -> JQXHR  -- jqXHR
---
--- The error handler's type is:
--- (  JQXHR  -- jqXHR
--- -> String -- textStatus
--- -> String -- errorThrown
---
--- Warning: the textStatus String can be null, how do we handle it?
-
-ajax :: String -> Fay () -> Fay () -> Fay ()
-ajax = ffi "jQuery.ajax(%1, { success: %2, error: %3 })"
-
-ajaxForeign :: Foreign f
-  => String -- url
-  -> (f -> String -> JQXHR -> Fay ()) -- success
-  -> (JQXHR -> String -> String -> Fay ()) -- error
+ajax :: Foreign b
+  => String
+  -> (b -> Maybe String -> JQXHR -> Fay ())
+  -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
   -> Fay ()
-ajaxForeign = ffi "jQuery.ajax(%1, { success: %2, error: %3 })"
-
-ajaxString :: Foreign f
-  => String -- url
-  -> (f -> String -> JQXHR -> Fay ()) -- success
-  -> (JQXHR -> String -> String -> Fay ()) -- error
-  -> Fay ()
-ajaxString = ffi "jQuery.ajax(%1, { success: %2, error: %3 })"
+ajax ur succ err = ajax' $ defaultAjaxSettings
+  { success = Defined succ
+  , data' = Undefined :: Defined String -- hackety hack
+  , error' = Defined err
+  , url = Defined ur }
 
 -- Serializes the given object to JSON and passes it as the request body without request parameters.
 -- The response is deserialized depending on its type.
 ajaxPost :: (Foreign f, Foreign g)
-  => String -- url
-  -> f -- data
-  -> (g -> String -> JQXHR -> Fay ()) -- success
-  -> (JQXHR -> String -> String -> Fay ()) -- error
+  => String
+  -> f
+  -> (g -> Maybe String -> JQXHR -> Fay ())
+  -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
   -> Fay ()
-ajaxPost = ffi "jQuery.ajax({\
-  \ url: %1, \
-  \ data: JSON.stringify(%2), \
-  \ success: %3, \
-  \ error: %4, \
-  \ type: 'POST', \
-  \ processData: false, \
-  \ contentType: 'text/json', \
-  \ dataType: 'json' \
-  \})"
+ajaxPost ur dat succ err = ajax' $ defaultAjaxSettings
+  { success = Defined succ
+  , data' = Defined $ jsonStringify dat
+  , error' = Defined err
+  , url = Defined ur
+  , type' = Defined "POST"
+  , processData = Defined False
+  , contentType = Defined "text/json"
+  , dataType = Defined "json"
+  }
 
 -- Same as ajaxPost but sends the data inside the given request parameter
 ajaxPostParam :: (Foreign f, Foreign g)
-  => String -- url
-  -> String -- request parameter
-  -> f -- data
-  -> (g -> String -> JQXHR -> Fay ()) -- success
-  -> (JQXHR -> String -> String -> Fay ()) -- error
+  => String
+  -> String
+  -> f
+  -> (g -> Maybe String -> JQXHR -> Fay ())
+  -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
   -> Fay ()
-ajaxPostParam = ffi "jQuery.ajax({\
-  \ url: '%1', \
-  \ data: { '%2': JSON.stringify(%3) }, \
-  \ success: %4, \
-  \ error: %5, \
-  \ type: 'POST', \
-  \ dataType: 'json' \
-  \})"
+ajaxPostParam ur rqparam dat succ err = ajax' $ defaultAjaxSettings
+  { success = Defined succ
+  , data' = Defined $ makeRqObj rqparam dat
+  , error' = Defined err
+  , url = Defined ur
+  , type' = Defined "POST"
+  , processData = Defined False
+  , contentType = Defined "text/json"
+  , dataType = Defined "json"
+  }
+
+makeRqObj :: Foreign a => String -> a -> Object
+makeRqObj = ffi "{ '%1' : %2 }"
+
+data AjaxSettings a b = AjaxSettings
+  { accepts     :: Defined String
+  , async       :: Defined Bool
+  , beforeSend  :: Defined (JQXHR -> AjaxSettings a b -> Fay ())
+  , cache       :: Defined Bool
+  , complete    :: Defined (JQXHR -> String -> Fay ())
+  -- , contents :: Defined (Object RegExp) -- skipped
+  , contentType :: Defined String
+  -- , context :: Defined Object -- skipped
+  -- , converters :: Defined (Object Value) -- skipped
+  , crossDomain :: Defined Bool
+  , data'       :: Defined a
+  -- , dataFilter  :: Defined (Data -> Type -> Fay ()) -- skipped
+  , dataType    :: Defined String
+  , error'      :: Defined (JQXHR -> Maybe String -> Maybe String -> Fay ())
+  , global      :: Defined Bool
+  -- , headers :: Object String -- need generic objects
+  , ifModified  :: Defined Bool
+  , isLocal     :: Defined Bool
+  -- , jsonp -- skipped
+  -- , jsonpCallback -- skipped
+  , mimeType    :: Defined String
+  , password    :: Defined String
+  , processData :: Defined Bool
+  -- , scriptCharset -- skipped
+  -- , statusCode -- skipped
+  , success     :: Defined (b -> Maybe String -> JQXHR -> Fay ())
+  , timeout     :: Defined Double
+  -- , traditional -- skipped
+  , type'       :: Defined String
+  , url         :: Defined String
+  , username    :: Defined String
+  -- , xhr :: XHR -- XHR needs to be added to fay-dom
+  }
+instance (Foreign a, Foreign b) => Foreign (AjaxSettings a b)
+
+defaultAjaxSettings :: Foreign a => AjaxSettings a b
+defaultAjaxSettings = AjaxSettings
+  { accepts     = Undefined
+  , async       = Undefined
+  , beforeSend  = Undefined
+  , cache       = Undefined
+  , complete    = Undefined
+  , contentType = Undefined
+  , crossDomain = Undefined
+  , data'       = Undefined
+  , dataType    = Undefined
+  , error'      = Undefined
+  , global      = Undefined
+  , ifModified  = Undefined
+  , isLocal     = Undefined
+  , mimeType    = Undefined
+  , password    = Undefined
+  , processData = Undefined
+  , success     = Undefined
+  , timeout     = Undefined
+  , type'       = Undefined
+  , url         = Undefined
+  , username    = Undefined
+  }
+
+ajax' :: (Foreign a, Foreign b) => AjaxSettings a b -> Fay ()
+ajax' = ffi "\
+  \ (function (o) { \
+    \ delete o['instance']; \
+    \ for (var p in o) { \
+      \ if (/\\$39\\$/.test(p)) { \
+        \ o[p.replace(/\\$39\\$/g, '')] = o[p]; \
+        \ delete o[p]; \
+      \ } \
+    \ } \
+    \ if (o['data']) { o['data'] = JSON.stringify(o['data']); } \
+    \ console.log(o); \
+    \ return jQuery.ajax(o); \
+  \ })(%1)"
 
 ----
 ---- Attributes
