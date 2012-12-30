@@ -401,11 +401,38 @@ setWidthWith = ffi "%2.width(%1)"
 -- Basics
 --
 
+data AnimationType = Show | Hide | Toggle
+instance Foreign AnimationType
+
 data Speed = Instantly | Slow | Fast | Speed Double
 instance Foreign Speed
 
-animate :: String -> Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
-animate = ffi "%4[%1]((function () { \
+data Animation = Animation
+  { _type :: AnimationType
+  , _speed :: Speed
+  , _nextAnimation :: Maybe Animation
+  , _element :: JQuery
+  }
+
+anim :: AnimationType -> JQuery -> Animation
+anim ty el = Animation ty Fast Nothing el
+
+speed :: Speed -> Animation -> Animation
+speed spd anim = anim { _speed = spd }
+
+chainAnim :: Animation -> Animation -> Animation
+chainAnim a1 a2 = a1 { _nextAnimation = Just a2 }
+
+runAnimation :: Animation -> Fay ()
+runAnimation a = do
+  animate (_type a) (_speed a) cb (_element a)
+    where
+      cb = case _nextAnimation a of
+                Just a2 -> const (runAnimation a2)
+                Nothing -> const (return ())
+
+animate :: AnimationType -> Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
+animate = ffi "%4[%1.instance.toLowerCase()]((function () { \
     \ if (%2.instance == 'Slow') { \
       \ return 'slow'; \
     \ } else if (%2.instance == 'Instantly') { \
@@ -420,13 +447,13 @@ animate = ffi "%4[%1]((function () { \
   \ })"
 
 hide :: Speed -> (JQuery -> Fay()) -> JQuery -> Fay ()
-hide = animate "hide"
+hide = animate Hide
 
 jshow :: Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
-jshow = animate "show"
+jshow = animate Show
 
 toggle :: Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
-toggle = animate "toggle"
+toggle = animate Toggle
 
 --
 -- Fading

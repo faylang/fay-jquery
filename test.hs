@@ -61,12 +61,16 @@ testAnimations = do
   body <- select "body"
   container <- select "<div/>" >>= appendTo body
   thing <- select "<div>Hello</div>" >>= appendTo container
-  select "<input type='button' value='Hide text'>" >>= click (const $ hide Slow empty thing) >>= appendTo container
-  select "<input type='button' value='Show text'>" >>= click (const $ jshow Instantly empty thing) >>= appendTo container
-  select "<input type='button' value='Toggle text'>" >>= click (const $ toggle (Speed 100) empty thing) >>= appendTo container
-  select "<input type='button' value='Chain animation'>" >>= click (const $ toggle (Speed 100) (toggle (Speed 100) empty) thing) >>= appendTo container
+  select "<input type='button' value='Hide slow'>" >>= click (const $ hide Slow empty thing) >>= appendTo container
+  select "<input type='button' value='Show instantly'>" >>= click (const $ jshow Instantly empty thing) >>= appendTo container
+  select "<input type='button' value='Toggle 100'>" >>= click (const $ toggle (Speed 100) empty thing) >>= appendTo container
+  select "<input type='button' value='Chain ugly'>" >>= click (const $ toggle (Speed 100) (toggle (Speed 100) empty) thing) >>= appendTo container
+  select "<input type='button' value='Chain fancy'>" >>= click (const $ runAnimation $ chainedAnimation thing) >>= appendTo container
   return ()
-    where empty = const $ return ()
+
+    where
+      empty = const $ return ()
+      chainedAnimation el = speed Fast (anim Toggle el) `chainAnim` speed Slow (anim Toggle el)
 
 isDivisibleBy :: Double -> Double -> Bool
 --isDivisibleBy num divisor = let divided = num/divisor in divided - (fromIntegral $ floor divided) == 0
