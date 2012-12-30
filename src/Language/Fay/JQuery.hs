@@ -61,8 +61,8 @@ ajax ur succ err = ajax' $ defaultAjaxSettings
   , error' = Defined err
   , url = Defined ur }
 
--- Serializes the given object to JSON and passes it as the request body without request parameters.
--- The response is deserialized depending on its type.
+-- | Serializes the given object to JSON and passes it as the request body without request parameters.
+--   The response is deserialized depending on its type.
 ajaxPost :: (Foreign f, Foreign g)
   => String
   -> f
@@ -80,7 +80,7 @@ ajaxPost ur dat succ err = ajax' $ defaultAjaxSettings
   , dataType = Defined "json"
   }
 
--- Same as ajaxPost but sends the data inside the given request parameter
+-- | Same as ajaxPost but sends the data inside the given request parameter
 ajaxPostParam :: (Foreign f, Foreign g)
   => String
   -> String
@@ -401,32 +401,32 @@ setWidthWith = ffi "%2.width(%1)"
 -- Basics
 --
 
-hide       :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
-hide = ffi "%3.hide(%1,function() { %2(this); })"
+data Speed = Instantly | Slow | Fast | Speed Double
+instance Foreign Speed
 
-hideSlow   :: (Element -> Fay ()) -> JQuery -> Fay ()
-hideSlow = ffi "%2.hide('slow', function () { %1(this); })"
+animate :: String -> Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
+animate = ffi "%4[%1]((function () { \
+    \ if (%2.instance == 'Slow') { \
+      \ return 'slow'; \
+    \ } else if (%2.instance == 'Instantly') { \
+      \ return null; \
+    \ } else if (%2.instance == 'Fast') { \
+      \ return 'fast'; \
+    \ } else { \
+      \ return %2.slot1; \
+    \ } \
+  \ })(), function() { \
+     \ %3(jQuery(this)); \
+  \ })"
 
-hideFast   :: (Element -> Fay ()) -> JQuery -> Fay ()
-hideFast = ffi "%2.hide('fast', function () { %1(this); })"
+hide :: Speed -> (JQuery -> Fay()) -> JQuery -> Fay ()
+hide = animate "hide"
 
-show       :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
-show = ffi "%3.show(%1, function () { %2(this); })"
+jshow :: Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
+jshow = animate "show"
 
-showSlow   :: (Element -> Fay ()) -> JQuery -> Fay ()
-showSlow = ffi "%2.show('slow', function () { %1(this); })"
-
-showFast   :: (Element -> Fay ()) -> JQuery -> Fay ()
-showFast = ffi "%2.show('fast', function () { %1(this); })"
-
-toggle     :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
-toggle = ffi "%3.toggle(%1, function () { %2(this); })"
-
-toggleSlow :: (Element -> Fay ()) -> JQuery -> Fay ()
-toggleSlow = ffi "%2.toggle('slow', function () { %1(this); })"
-
-toggleFast :: (Element -> Fay ()) -> JQuery -> Fay ()
-toggleFast = ffi "%2.toggle('fast', function () { %1(this); })"
+toggle :: Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
+toggle = animate "toggle"
 
 --
 -- Fading
@@ -477,40 +477,40 @@ unload = ffi "jQuery(%2).unload(%1)"
 -- Mouse Events
 --
 
-click :: (Event -> Fay ()) -> JQuery -> Fay ()
+click :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 click = ffi "%2.click(%1)"
 
-dblclick :: (Event -> Fay ()) -> JQuery -> Fay ()
+dblclick :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 dblclick = ffi "%2.dblclick(%1)"
 
-focusin :: (Event -> Fay ()) -> JQuery -> Fay ()
+focusin :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 focusin = ffi "%2.focusin(%1)"
 
-focusout :: (Event -> Fay ()) -> JQuery -> Fay ()
+focusout :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 focusout = ffi "%2.focusout(%1)"
 
-hover :: (Event -> Fay ()) -> JQuery -> Fay ()
+hover :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 hover = ffi "%2.hover(%1)"
 
-mousedown :: (Event -> Fay ()) -> JQuery -> Fay ()
+mousedown :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 mousedown = ffi "%2.mousedown(%1)"
 
-mouseenter :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseenter :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 mouseenter = ffi "%2.mouseenter(%1)"
 
-mouseleave :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseleave :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 mouseleave = ffi "%2.mouseleave(%1)"
 
-mousemove :: (Event -> Fay ()) -> JQuery -> Fay ()
+mousemove :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 mousemove = ffi "%2.mousemove(%1)"
 
-mouseout :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseout :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 mouseout = ffi "%2.mouseout(%1)"
 
-mouseover :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseover :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 mouseover = ffi "%2.mouseover(%1)"
 
-mouseup :: (Event -> Fay ()) -> JQuery -> Fay ()
+mouseup :: (Event -> Fay ()) -> JQuery -> Fay JQuery
 mouseup = ffi "%2.mouseup(%1)"
 
 -- Argument splat since an arbitrary number of events can be attached.

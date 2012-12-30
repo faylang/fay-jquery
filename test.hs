@@ -51,7 +51,22 @@ main = ready $ do
     table <- buildTable tableData
     replaceWithJQuery table div
     addZebraStriping table
+
+    testAnimations
+
     return ()
+
+testAnimations :: Fay ()
+testAnimations = do
+  body <- select "body"
+  container <- select "<div/>" >>= appendTo body
+  thing <- select "<div>Hello</div>" >>= appendTo container
+  select "<input type='button' value='Hide text'>" >>= click (const $ hide Slow empty thing) >>= appendTo container
+  select "<input type='button' value='Show text'>" >>= click (const $ jshow Instantly empty thing) >>= appendTo container
+  select "<input type='button' value='Toggle text'>" >>= click (const $ toggle (Speed 100) empty thing) >>= appendTo container
+  select "<input type='button' value='Chain animation'>" >>= click (const $ toggle (Speed 100) (toggle (Speed 100) empty) thing) >>= appendTo container
+  return ()
+    where empty = const $ return ()
 
 isDivisibleBy :: Double -> Double -> Bool
 --isDivisibleBy num divisor = let divided = num/divisor in divided - (fromIntegral $ floor divided) == 0
