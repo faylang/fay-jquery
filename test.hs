@@ -61,16 +61,15 @@ testAnimations = do
   body <- select "body"
   container <- select "<div/>" >>= appendTo body
   thing <- select "<div>Hello</div>" >>= appendTo container
-  select "<input type='button' value='Hide slow'>" >>= click (const $ hide Slow empty thing) >>= appendTo container
-  select "<input type='button' value='Show instantly'>" >>= click (const $ jshow Instantly empty thing) >>= appendTo container
-  select "<input type='button' value='Toggle 100'>" >>= click (const $ toggle (Speed 100) empty thing) >>= appendTo container
-  select "<input type='button' value='Chain ugly'>" >>= click (const $ toggle (Speed 100) (toggle (Speed 100) empty) thing) >>= appendTo container
-  select "<input type='button' value='Chain fancy'>" >>= click (const $ runAnimation $ chainedAnimation thing) >>= appendTo container
+  select "<input type='button' value='Hide slow'>" >>= click (const $ hide Slow thing) >>= appendTo container
+  select "<input type='button' value='Show instantly'>" >>= click (const $ jshow Instantly thing) >>= appendTo container
+  select "<input type='button' value='Toggle 100'>" >>= click (const $ toggle (Speed 100) thing) >>= appendTo container
+  select "<input type='button' value='Chained'>" >>= click (const $ runAnimation $ chainedAnimation thing) >>= appendTo container
   return ()
 
     where
       empty = const $ return ()
-      chainedAnimation el = speed Fast (anim Toggle el) `chainAnim` speed Slow (anim Toggle el)
+      chainedAnimation el = chainAnims [speed Fast (anim Toggle el), speed Slow (anim Toggle el), anim FadeOut el, anim FadeIn el]
 
 isDivisibleBy :: Double -> Double -> Bool
 --isDivisibleBy num divisor = let divided = num/divisor in divided - (fromIntegral $ floor divided) == 0

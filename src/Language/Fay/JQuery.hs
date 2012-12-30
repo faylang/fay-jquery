@@ -36,6 +36,8 @@ instance Foreign Window
 data Object
 instance Foreign Object
 
+emptyCallback :: a -> Fay ()
+emptyCallback = const $ return ()
 
 jsonStringify :: Foreign a => a -> String
 jsonStringify = ffi "JSON.stringify(%1)"
@@ -401,7 +403,7 @@ setWidthWith = ffi "%2.width(%1)"
 -- Basics
 --
 
-data AnimationType = Show | Hide | Toggle
+data AnimationType = Show | Hide | Toggle | FadeIn | FadeOut | FadeToggle
 instance Foreign AnimationType
 
 data Speed = Instantly | Slow | Fast | Speed Double
@@ -423,6 +425,10 @@ speed spd anim = anim { _speed = spd }
 chainAnim :: Animation -> Animation -> Animation
 chainAnim a1 a2 = a1 { _nextAnimation = Just a2 }
 
+chainAnims :: [Animation] -> Animation
+chainAnims [a] = a
+chainAnims (a:as) = a `chainAnim` chainAnims as
+
 runAnimation :: Animation -> Fay ()
 runAnimation a = do
   animate (_type a) (_speed a) cb (_element a)
@@ -432,7 +438,14 @@ runAnimation a = do
                 Nothing -> const (return ())
 
 animate :: AnimationType -> Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
-animate = ffi "%4[%1.instance.toLowerCase()]((function () { \
+animate = ffi "%4[(function () { \
+      \ switch (%1.instance) { \
+        \ case 'FadeIn': return 'fadeIn'; \
+        \ case 'FadeOut': return 'fadeOut'; \
+        \ case 'FadeToggle': return 'fadeToggle'; \
+        \ default: return %1.instance.toLowerCase(); \
+      \ } \
+    \ })()]((function () { \
     \ if (%2.instance == 'Slow') { \
       \ return 'slow'; \
     \ } else if (%2.instance == 'Instantly') { \
@@ -446,30 +459,29 @@ animate = ffi "%4[%1.instance.toLowerCase()]((function () { \
      \ %3(jQuery(this)); \
   \ })"
 
-hide :: Speed -> (JQuery -> Fay()) -> JQuery -> Fay ()
-hide = animate Hide
+hide :: Speed -> JQuery -> Fay ()
+hide spd = animate Hide spd emptyCallback
 
-jshow :: Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
-jshow = animate Show
+jshow :: Speed -> JQuery -> Fay ()
+jshow spd = animate Show spd emptyCallback
 
-toggle :: Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
-toggle = animate Toggle
+toggle :: Speed -> JQuery -> Fay ()
+toggle spd = animate Toggle spd emptyCallback
 
 --
 -- Fading
 --
 
---fadeIn      :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
---fadeInSlow  :: (Element -> Fay ()) -> JQuery -> Fay ()
---fadeInFast  :: (Element -> Fay ()) -> JQuery -> Fay ()
---fadeOut     :: Double -> (Element -> Fay ()) -> JQuery -> Fay ()
---fadeOutSlow :: (Element -> Fay ()) -> JQuery -> Fay ()
---fadeOutFast :: (Element -> Fay ()) -> JQuery -> Fay ()
---fadeTo      :: Double -> String -> (Element -> Fay ()) -> JQuery -> Fay ()
---fadeToSlow  :: String -> (Element -> Fay ()) -> JQuery -> Fay ()
---fadeToFast  :: String -> (Element -> Fay ()) -> JQuery -> Fay ()
---fadeToggle  :: String -> (Element -> Fay ()) -> JQuery -> Fay ()
+fadeIn :: Speed -> JQuery -> Fay ()
+fadeIn spd = animate FadeIn spd emptyCallback
 
+fadeOut :: Speed -> JQuery -> Fay ()
+fadeOut spd = animate FadeOut spd emptyCallback
+
+-- TODO fadeTo
+
+fadeToggle :: Speed -> JQuery -> Fay ()
+fadeToggle spd = animate FadeToggle spd emptyCallback
 
 ----
 ---- Events
