@@ -53,6 +53,7 @@ main = ready $ do
     addZebraStriping table
 
     testAnimations
+    testAjax
 
     return ()
 
@@ -70,6 +71,16 @@ testAnimations = do
     where
       empty = const $ return ()
       chainedAnimation el = chainAnims [speed Fast (anim Toggle el), speed Slow (anim Toggle el), anim FadeOut el, anim FadeIn el]
+
+data AjaxTest = AjaxTest Double Double
+instance Foreign AjaxTest
+
+testAjax :: Fay ()
+testAjax = do
+  ajax "http://www.example.com" putStrLn (\_ _ _ -> return ())
+  ajaxPost "http://www.example.com" (AjaxTest 1 2) putStrLn (\_ _ _ -> return ())
+  ajaxPostParam "http://www.example.com" "foo" (AjaxTest 1 2) putStrLn (\_ _ _ -> return ())
+
 
 isDivisibleBy :: Double -> Double -> Bool
 --isDivisibleBy num divisor = let divided = num/divisor in divided - (fromIntegral $ floor divided) == 0

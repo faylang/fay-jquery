@@ -39,22 +39,13 @@ instance Foreign Object
 emptyCallback :: a -> Fay ()
 emptyCallback = const $ return ()
 
-jsonStringify :: Foreign a => a -> String
-jsonStringify = ffi "JSON.stringify(%1)"
-
-jsonParse :: Foreign b
-  => String
-  -> String -- The name of the record/constructor, needed to decode.
-  -> b
-jsonParse = ffi "(function () { var o = JSON.parse(%2); o.instance = '%1'; return o; })()"
-
 ----
 ---- Ajax
 ----
 
 ajax :: Foreign b
   => String
-  -> (b -> Maybe String -> JQXHR -> Fay ())
+  -> (b -> Fay ())
   -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
   -> Fay ()
 ajax ur succ err = ajax' $ defaultAjaxSettings
@@ -68,12 +59,12 @@ ajax ur succ err = ajax' $ defaultAjaxSettings
 ajaxPost :: (Foreign f, Foreign g)
   => String
   -> f
-  -> (g -> Maybe String -> JQXHR -> Fay ())
+  -> (g -> Fay ())
   -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
   -> Fay ()
 ajaxPost ur dat succ err = ajax' $ defaultAjaxSettings
   { success = Defined succ
-  , data' = Defined $ jsonStringify dat
+  , data' = Defined dat
   , error' = Defined err
   , url = Defined ur
   , type' = Defined "POST"
@@ -87,7 +78,7 @@ ajaxPostParam :: (Foreign f, Foreign g)
   => String
   -> String
   -> f
-  -> (g -> Maybe String -> JQXHR -> Fay ())
+  -> (g -> Fay ())
   -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
   -> Fay ()
 ajaxPostParam ur rqparam dat succ err = ajax' $ defaultAjaxSettings
@@ -102,7 +93,7 @@ ajaxPostParam ur rqparam dat succ err = ajax' $ defaultAjaxSettings
   }
 
 makeRqObj :: Foreign a => String -> a -> Object
-makeRqObj = ffi "{ '%1' : %2 }"
+makeRqObj = ffi "(function () { var o = {}; o[%1] = %2; return o; })()"
 
 data AjaxSettings a b = AjaxSettings
   { accepts     :: Defined String
@@ -130,7 +121,7 @@ data AjaxSettings a b = AjaxSettings
   , processData :: Defined Bool
   -- , scriptCharset -- skipped
   -- , statusCode -- skipped
-  , success     :: Defined (b -> Maybe String -> JQXHR -> Fay ())
+  , success     :: Defined (b -> Fay ())
   , timeout     :: Defined Double
   -- , traditional -- skipped
   , type'       :: Defined String
@@ -175,7 +166,6 @@ ajax' = ffi "\
         \ delete o[p]; \
       \ } \
     \ } \
-    \ if (o['data']) { o['data'] = JSON.stringify(o['data']); } \
     \ console.log(o); \
     \ return jQuery.ajax(o); \
   \ })(%1)"
