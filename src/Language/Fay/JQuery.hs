@@ -421,13 +421,13 @@ chainAnims (a:as) = a `chainAnim` chainAnims as
 
 runAnimation :: Animation -> Fay ()
 runAnimation a = do
-  animate (_type a) (_speed a) cb (_element a)
+  animate (_type a) (_speed a) cb (_element a) >> return ()
     where
       cb = case _nextAnimation a of
                 Just a2 -> const (runAnimation a2)
                 Nothing -> const (return ())
 
-animate :: AnimationType -> Speed -> (JQuery -> Fay ()) -> JQuery -> Fay ()
+animate :: AnimationType -> Speed -> (JQuery -> Fay ()) -> JQuery -> Fay JQuery
 animate = ffi "%4[(function () { \
       \ switch (%1.instance) { \
         \ case 'FadeIn': return 'fadeIn'; \
@@ -449,28 +449,28 @@ animate = ffi "%4[(function () { \
      \ %3(jQuery(this)); \
   \ })"
 
-hide :: Speed -> JQuery -> Fay ()
+hide :: Speed -> JQuery -> Fay JQuery
 hide spd = animate Hide spd emptyCallback
 
-jshow :: Speed -> JQuery -> Fay ()
+jshow :: Speed -> JQuery -> Fay JQuery
 jshow spd = animate Show spd emptyCallback
 
-toggle :: Speed -> JQuery -> Fay ()
+toggle :: Speed -> JQuery -> Fay JQuery
 toggle spd = animate Toggle spd emptyCallback
 
 --
 -- Fading
 --
 
-fadeIn :: Speed -> JQuery -> Fay ()
+fadeIn :: Speed -> JQuery -> Fay JQuery
 fadeIn spd = animate FadeIn spd emptyCallback
 
-fadeOut :: Speed -> JQuery -> Fay ()
+fadeOut :: Speed -> JQuery -> Fay JQuery
 fadeOut spd = animate FadeOut spd emptyCallback
 
 -- TODO fadeTo
 
-fadeToggle :: Speed -> JQuery -> Fay ()
+fadeToggle :: Speed -> JQuery -> Fay JQuery
 fadeToggle spd = animate FadeToggle spd emptyCallback
 
 ----

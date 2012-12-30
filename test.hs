@@ -62,9 +62,9 @@ testAnimations = do
   body <- select "body"
   container <- select "<div/>" >>= appendTo body
   thing <- select "<div>Hello</div>" >>= appendTo container
-  select "<input type='button' value='Hide slow'>" >>= click (const $ hide Slow thing) >>= appendTo container
-  select "<input type='button' value='Show instantly'>" >>= click (const $ jshow Instantly thing) >>= appendTo container
-  select "<input type='button' value='Toggle 100'>" >>= click (const $ toggle (Speed 100) thing) >>= appendTo container
+  select "<input type='button' value='Hide slow'>" >>= click (const $ hide Slow thing >> return ()) >>= appendTo container
+  select "<input type='button' value='Show instantly'>" >>= click (const $ jshow Instantly thing >> return ()) >>= appendTo container
+  select "<input type='button' value='Toggle 100'>" >>= click (const $ toggle (Speed 100) thing >> return ()) >>= appendTo container
   select "<input type='button' value='Chained'>" >>= click (const $ runAnimation $ chainedAnimation thing) >>= appendTo container
   return ()
 
