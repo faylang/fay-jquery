@@ -43,19 +43,20 @@ This binding is a work in progress. I'm adding calls by section of the jQuery
 docs. There is some overlap in the sections, but the following sections are
 (mostly) complete.
 
+- Ajax
 - Attributes
 - Core
 - CSS
+- Effects (Basic, Fading)
 - Manipulation
 - Traversing
 
 Still to do
 -----------
 
-- Ajax
 - Data
 - Deferred Object
-- Effects
+- Effects (Custom, Sliding)
 - Events
 - Forms
 - Internals
