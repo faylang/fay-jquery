@@ -32,6 +32,12 @@ To use this with fay, cabal install the package which will put the
 source files in fay ~/.cabal/share/fay-jquery-0.1.0.0/src. You can then
 compile with fay using
 
+in fay >= 0.12:
+```bash
+fay --package fay-jquery MyFile.hs
+```
+
+in fay < 0.12:
 ```
 fay --include=~/.cabal/share/fay-jquery-0.1.0.0/src MyFile.hs
 ```
