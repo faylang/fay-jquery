@@ -11,13 +11,9 @@ author:              Brian Victor
 -- copyright:
 build-type:          Simple
 cabal-version:       >=1.8
-
-data-files:
-  src/Language/Fay/JQuery.hs
+data-files: src/Language/Fay/JQuery.hs
 
 library
   hs-source-dirs: src
   exposed-modules: Language.Fay.JQuery
-                   Paths_fay_jquery
-  build-depends: base,
-                 fay
+  build-depends: fay-base

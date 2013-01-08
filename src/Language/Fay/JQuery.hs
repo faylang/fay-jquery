@@ -1,5 +1,4 @@
 {-# LANGUAGE EmptyDataDecls    #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RankNTypes        #-}
 
 module Language.Fay.JQuery where
@@ -9,8 +8,8 @@ Note that this is very much in flux. Function names, type signatures, and
 data types all subject to drastic change.
 --}
 
-import           Language.Fay.FFI
-import           Language.Fay.Prelude
+import           FFI
+import           Prelude
 
 data JQuery
 instance Foreign JQuery
