@@ -451,6 +451,9 @@ animate = ffi "%4[(function () { \
 hide :: Speed -> JQuery -> Fay JQuery
 hide spd = animate Hide spd emptyCallback
 
+unhide :: JQuery -> Fay JQuery
+unhide = ffi "%1['show']()"
+
 jshow :: Speed -> JQuery -> Fay JQuery
 jshow spd = animate Show spd emptyCallback
 
@@ -636,7 +639,10 @@ blur = ffi "%2['blur'](%1)"
 change :: (Event -> Fay ()) -> JQuery -> Fay ()
 change = ffi "%2['change'](%1)"
 
-focus :: (Event -> Fay ()) -> JQuery -> Fay ()
+onFocus :: (Event -> Fay ()) -> JQuery -> Fay ()
+onFocus = ffi "%2['focus'](%1)"
+
+focus :: JQuery -> Fay JQuery
 focus = ffi "%2['focus'](%1)"
 
 -- TODO `select` would clash with the other select definition, should it be renamed?
@@ -1011,11 +1017,57 @@ slice = ffi "%2['slice'](%1)"
 sliceFromTo :: Double -> Double -> JQuery -> Fay JQuery
 sliceFromTo = ffi "%3['slice'](%1, %2)"
 
+data KeyCode = KeyUp
+             | KeyDown
+             | KeyLeft
+             | KeyRight
+             | KeyRet
+             | SomeKey Double
+  deriving (Show)
 
+onKeycode :: (KeyCode -> Fay Bool) -> JQuery -> Fay JQuery
+onKeycode callback el = do
+  _onKeycode (\code -> callback (case code of
+                                   38 -> KeyUp
+                                   40 -> KeyDown
+                                   37 -> KeyLeft
+                                   39 -> KeyRight
+                                   13 -> KeyRet
+                                   _  -> SomeKey code))
+             el
 
+_onKeycode :: (Double -> Fay Bool) -> JQuery -> Fay JQuery
+_onKeycode = ffi "%2['keycode'](%1)"
 
+unKeycode :: JQuery -> Fay JQuery
+unKeycode = ffi "%1['unkeycode']()"
 
+onClick :: (Event -> Fay Bool) -> JQuery -> Fay JQuery
+onClick = ffi "%2['click'](%1)"
 
+onChange :: (Fay ()) -> JQuery -> Fay JQuery
+onChange = ffi "%2['change'](%1)"
+
+onSubmit :: Fay Bool -> JQuery -> Fay JQuery
+onSubmit = ffi "%2['submit'](%1)"
+
+eventX :: Event -> JQuery -> Double
+eventX = ffi "%1['pageX'] - %2['get'](0)['offsetLeft']"
+
+eventY :: Event -> JQuery -> Double
+eventY = ffi "%1['pageY'] - %2['get'](0)['offsetTop']"
+
+onDblClick :: (Event -> Fay Bool) -> JQuery -> Fay JQuery
+onDblClick = ffi "%2['dblclick'](%1)"
+
+setDraggable :: JQuery -> Fay JQuery
+setDraggable = ffi "%1['draggable']()"
+
+validate :: JQuery -> Fay () -> Fay ()
+validate = ffi "%1['validate']({ \"submitHandler\": %2 })"
+
+onLivechange :: Fay () -> JQuery -> Fay JQuery
+onLivechange = ffi "%2['livechange'](50,%1)"
 
 -- vim implementation shortcut
 -- inoremap <F6> <ESC>:normal 0ywo<ESC>pa= ffi ""<ESC>F"i
