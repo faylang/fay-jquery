@@ -643,7 +643,7 @@ onFocus :: (Event -> Fay ()) -> JQuery -> Fay ()
 onFocus = ffi "%2['focus'](%1)"
 
 focus :: JQuery -> Fay JQuery
-focus = ffi "%2['focus'](%1)"
+focus = ffi "%1['focus']()"
 
 -- TODO `select` would clash with the other select definition, should it be renamed?
 onselect :: (Event -> Fay ()) -> JQuery -> Fay ()

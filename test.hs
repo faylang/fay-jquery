@@ -2,9 +2,9 @@
 
 module Test (main) where
 
-import Language.Fay.Prelude
+import Prelude
 import Language.Fay.JQuery
-import Language.Fay.FFI
+import FFI
 
 (>=>)       :: (a -> Fay b) -> (b -> Fay c) -> (a -> Fay c)
 f >=> g     = \x -> f x >>= g
