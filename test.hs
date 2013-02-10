@@ -3,7 +3,7 @@
 module Test (main) where
 
 import Prelude
-import Language.Fay.JQuery
+import JQuery
 import FFI
 
 (>=>)       :: (a -> Fay b) -> (b -> Fay c) -> (a -> Fay c)
@@ -39,7 +39,7 @@ buildTable rowsData = do
     myMapM (buildRow >=> appendToJQuery table) rowsData
     return table
 
-dir :: (Foreign a) => a -> Fay JQuery
+dir :: a -> Fay JQuery
 dir = ffi "console.dir(%1)"
 
 clog :: String -> Fay JQuery
@@ -73,7 +73,6 @@ testAnimations = do
       chainedAnimation el = chainAnims [speed Fast (anim Toggle el), speed Slow (anim Toggle el), anim FadeOut el, anim FadeIn el]
 
 data AjaxTest = AjaxTest Double Double
-instance Foreign AjaxTest
 
 testAjax :: Fay ()
 testAjax = do

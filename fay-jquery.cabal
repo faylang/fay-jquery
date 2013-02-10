@@ -1,5 +1,5 @@
 name:                fay-jquery
-version:             0.2.1.0
+version:             0.3.0.0
 synopsis:            jQuery binding.
 description:         jQuery binding.
 homepage:            https://github.com/faylang/fay-jquery
@@ -11,9 +11,9 @@ maintainer:          Chris Done <chrisdone@gmail.com>
 copyright:           Adam Bergmark, Brian Victor, Chris Done
 build-type:          Simple
 cabal-version:       >=1.8
-data-files: src/Language/Fay/JQuery.hs
+data-files: src/JQuery.hs
 
 library
   hs-source-dirs: src
-  exposed-modules: Language.Fay.JQuery
+  exposed-modules: JQuery
   build-depends: fay-base >= 0.14.1.0

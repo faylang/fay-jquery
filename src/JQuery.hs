@@ -1,7 +1,7 @@
 {-# LANGUAGE EmptyDataDecls    #-}
 {-# LANGUAGE RankNTypes        #-}
 
-module Language.Fay.JQuery where
+module JQuery where
 
 {--
 Note that this is very much in flux. Function names, type signatures, and
@@ -711,19 +711,19 @@ detachSelector = ffi "%2['detach'](%1)"
 empty :: JQuery -> Fay JQuery
 empty = ffi "%1['empty']()"
 
-insertAfter :: JQuery -> Fay JQuery
+insertAfter :: a -> JQuery -> Fay JQuery
 insertAfter = ffi "%2['insertAfter'](%1)"
 
-insertBefore :: JQuery -> Fay JQuery
+insertBefore :: a -> JQuery -> Fay JQuery
 insertBefore = ffi "%2['insertBefore'](%1)"
 
-prepend :: JQuery -> Fay JQuery
+prepend :: a -> JQuery -> Fay JQuery
 prepend = ffi "%2['prepend'](%1)"
 
 prependWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 prependWith = ffi "%2['prepend'](%1)"
 
-prependTo :: JQuery -> Fay JQuery
+prependTo :: a -> JQuery -> Fay JQuery
 prependTo = ffi "%2['prependTo'](%1)"
 
 remove :: JQuery -> Fay JQuery
