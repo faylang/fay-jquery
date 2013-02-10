@@ -12,10 +12,8 @@ import           FFI
 import           Prelude
 
 data JQuery
-instance Foreign JQuery
 
 data JQXHR
-instance Foreign JQXHR
 
 type EventType = String
 
@@ -24,16 +22,12 @@ type Selector = String
 
 -- Things that should go in fay or fay-dom
 data Element
-instance Foreign Element
 
 data Document
-instance Foreign Document
 
 data Window
-instance Foreign Window
 
 data Object
-instance Foreign Object
 
 emptyCallback :: a -> Fay ()
 emptyCallback = const $ return ()
@@ -42,11 +36,10 @@ emptyCallback = const $ return ()
 ---- Ajax
 ----
 
-ajax :: Foreign b
-  => String
-  -> (b -> Fay ())
-  -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
-  -> Fay ()
+ajax :: String
+     -> (Automatic b -> Fay ())
+     -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
+     -> Fay ()
 ajax ur succ err = ajax' $ defaultAjaxSettings
   { success = Defined succ
   , data' = Undefined :: Defined String -- hackety hack
@@ -55,12 +48,11 @@ ajax ur succ err = ajax' $ defaultAjaxSettings
 
 -- | Serializes the given object to JSON and passes it as the request body without request parameters.
 --   The response is deserialized depending on its type.
-ajaxPost :: (Foreign f, Foreign g)
-  => String
-  -> f
-  -> (g -> Fay ())
-  -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
-  -> Fay ()
+ajaxPost :: String
+         -> Automatic f
+         -> (Automatic g -> Fay ())
+         -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
+         -> Fay ()
 ajaxPost ur dat succ err = ajax' $ defaultAjaxSettings
   { success = Defined succ
   , data' = Defined dat
@@ -73,13 +65,12 @@ ajaxPost ur dat succ err = ajax' $ defaultAjaxSettings
   }
 
 -- | Same as ajaxPost but sends the data inside the given request parameter
-ajaxPostParam :: (Foreign f, Foreign g)
-  => String
-  -> String
-  -> f
-  -> (g -> Fay ())
-  -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
-  -> Fay ()
+ajaxPostParam :: String
+              -> String
+              -> Automatic f
+              -> (Automatic g -> Fay ())
+              -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
+              -> Fay ()
 ajaxPostParam ur rqparam dat succ err = ajax' $ defaultAjaxSettings
   { success = Defined succ
   , data' = Defined $ makeRqObj rqparam dat
@@ -91,7 +82,7 @@ ajaxPostParam ur rqparam dat succ err = ajax' $ defaultAjaxSettings
   , dataType = Defined "json"
   }
 
-makeRqObj :: Foreign a => String -> a -> Object
+makeRqObj :: String -> a -> Object
 makeRqObj = ffi "(function () { var o = {}; o[%1] = %2; return o; })()"
 
 data AjaxSettings a b = AjaxSettings
@@ -128,9 +119,8 @@ data AjaxSettings a b = AjaxSettings
   , username    :: Defined String
   -- , xhr :: XHR -- XHR needs to be added to fay-dom
   }
-instance (Foreign a, Foreign b) => Foreign (AjaxSettings a b)
 
-defaultAjaxSettings :: Foreign a => AjaxSettings a b
+defaultAjaxSettings :: AjaxSettings a b
 defaultAjaxSettings = AjaxSettings
   { accepts     = Undefined
   , async       = Undefined
@@ -155,7 +145,7 @@ defaultAjaxSettings = AjaxSettings
   , username    = Undefined
   }
 
-ajax' :: (Foreign a, Foreign b) => AjaxSettings a b -> Fay ()
+ajax' :: AjaxSettings (Automatic a) (Automatic b) -> Fay ()
 ajax' = ffi "\
   \ (function (o) { \
     \ delete o['instance']; \
@@ -243,7 +233,7 @@ toggleClassWith = ffi "%2['toggleClass'](%1)"
 toggleClassBoolWith :: (Double -> String -> Bool -> Fay JQuery) -> Bool -> JQuery -> Fay JQuery
 toggleClassBoolWith = ffi "%3['toggleClass'](%1, %2)"
 
-getVal :: (Foreign a) => JQuery -> Fay a
+getVal :: JQuery -> Fay String
 getVal = ffi "%1['val']()"
 
 setVal :: String -> JQuery -> Fay JQuery
@@ -272,7 +262,7 @@ holdReady = ffi "jQuery['holdReady'](%1)"
 selectElement :: Element -> Fay JQuery
 selectElement = ffi "jQuery(%1)"
 
-selectObject :: (Foreign a) => a -> Fay JQuery
+selectObject :: a -> Fay JQuery
 selectObject = ffi "jQuery(%1)"
 
 select :: String -> Fay JQuery
@@ -281,7 +271,7 @@ select = ffi "jQuery(%1)"
 selectEmpty :: Fay JQuery
 selectEmpty = ffi "jQuery()"
 
-createJQuery :: (Foreign a) => String -> a -> Fay JQuery
+createJQuery :: String -> a -> Fay JQuery
 createJQuery = ffi "jQuery(%1, %2)"
 
 ready :: Fay () -> Fay ()
@@ -393,10 +383,8 @@ setWidthWith = ffi "%2['width'](%1)"
 --
 
 data AnimationType = Show | Hide | Toggle | FadeIn | FadeOut | FadeToggle
-instance Foreign AnimationType
 
 data Speed = Instantly | Slow | Fast | Speed Double
-instance Foreign Speed
 
 data Animation = Animation
   { _type :: AnimationType
@@ -591,7 +579,6 @@ triggerHandler = ffi "%2['triggerHandler'](%1)"
 -- event.data skipped
 
 data Event
-instance Foreign Event
 
 delegateTarget :: Event -> Fay Element
 delegateTarget = ffi "jQuery(%1['delegateTarget'])"
@@ -678,13 +665,13 @@ keyup = ffi "%2['keyup'](%1)"
 ----
 
 -- Is there a better way to constrain the type here?
-after :: (Foreign a) => a -> JQuery -> Fay JQuery
+after :: a -> JQuery -> Fay JQuery
 after = ffi "%2['after'](%1)"
 
 afterWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 afterWith = ffi "%2['after'](%1)"
 
-append :: (Foreign a) => a -> JQuery -> Fay JQuery
+append :: a -> JQuery -> Fay JQuery
 append = ffi "%2['append'](%1)"
 
 appendJQuery :: JQuery -> JQuery -> Fay JQuery
@@ -694,7 +681,7 @@ appendJQuery = ffi "%2['append'](%1)"
 appendWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 appendWith = ffi "%2['append'](%1)"
 
-appendTo :: (Foreign a) => a -> JQuery -> Fay JQuery
+appendTo :: a -> JQuery -> Fay JQuery
 appendTo = ffi "%2['appendTo'](%1)"
 
 appendToJQuery :: JQuery -> JQuery -> Fay JQuery
@@ -702,7 +689,7 @@ appendToJQuery = ffi "%2['appendTo'](%1)"
 
 
 
-before :: (Foreign a) => a -> JQuery -> Fay JQuery
+before :: a -> JQuery -> Fay JQuery
 before = ffi "%2['before'](%1)"
 
 beforeWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
@@ -724,19 +711,19 @@ detachSelector = ffi "%2['detach'](%1)"
 empty :: JQuery -> Fay JQuery
 empty = ffi "%1['empty']()"
 
-insertAfter :: (Foreign a) => a -> JQuery -> Fay JQuery
+insertAfter :: JQuery -> Fay JQuery
 insertAfter = ffi "%2['insertAfter'](%1)"
 
-insertBefore :: (Foreign a) => a -> JQuery -> Fay JQuery
+insertBefore :: JQuery -> Fay JQuery
 insertBefore = ffi "%2['insertBefore'](%1)"
 
-prepend :: (Foreign a) => a -> JQuery -> Fay JQuery
+prepend :: JQuery -> Fay JQuery
 prepend = ffi "%2['prepend'](%1)"
 
 prependWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 prependWith = ffi "%2['prepend'](%1)"
 
-prependTo :: (Foreign a) => a -> JQuery -> Fay JQuery
+prependTo :: JQuery -> Fay JQuery
 prependTo = ffi "%2['prependTo'](%1)"
 
 remove :: JQuery -> Fay JQuery

@@ -1,5 +1,5 @@
 name:                fay-jquery
-version:             0.1.0.0
+version:             0.2.0.0
 -- synopsis:
 -- description:
 homepage:            https://github.com/faylang/fay-jquery
@@ -16,4 +16,4 @@ data-files: src/Language/Fay/JQuery.hs
 library
   hs-source-dirs: src
   exposed-modules: Language.Fay.JQuery
-  build-depends: fay-base
+  build-depends: fay-base >= 0.14.0.0
