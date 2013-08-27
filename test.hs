@@ -1,16 +1,21 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax  #-}
 
 module Test (main) where
 
-import Prelude
-import JQuery
 import FFI
+import Fay.Text
+import JQuery
+import Prelude
 
 (>=>)       :: (a -> Fay b) -> (b -> Fay c) -> (a -> Fay c)
 f >=> g     = \x -> f x >>= g
 
 myMapM            :: (a -> Fay b) -> [a] -> Fay [b]
 myMapM f as       =  mySequence (map f as)
+
+fail = undefined
 
 mySequence    :: [Fay a] -> Fay [a]
 mySequence ms = let k m m' = do { x <- m; xs <- m'; return (x:xs) } in
@@ -22,18 +27,18 @@ tableData = [ ["S", "Soprano"]
             , ["B", "Bass"]
             ]
 
-buildCell :: String -> Fay JQuery
+buildCell :: Text -> Fay JQuery
 buildCell cellData = do
     cell <- select "<td/>"
     setText cellData cell
 
-buildRow :: [String] -> Fay JQuery
+buildRow :: [Text] -> Fay JQuery
 buildRow rowData = do
     row <- select "<tr/>"
     myMapM (buildCell >=> appendToJQuery row) rowData
     return row
 
-buildTable :: [[String]] -> Fay JQuery
+buildTable :: [[Text]] -> Fay JQuery
 buildTable rowsData = do
     table <- select "<table/>"
     myMapM (buildRow >=> appendToJQuery table) rowsData
@@ -42,7 +47,7 @@ buildTable rowsData = do
 dir :: a -> Fay JQuery
 dir = ffi "console.dir(%1)"
 
-clog :: String -> Fay JQuery
+clog :: Text -> Fay JQuery
 clog = ffi "console.log(%1)"
 
 main :: Fay ()
@@ -88,7 +93,7 @@ isDivisibleBy num divisor = if num == 0 then True
                             else if num < 0 then False
                             else isDivisibleBy (num - divisor) divisor
 
-zebraStripeRows :: Double -> String -> Fay String
+zebraStripeRows :: Double -> Text -> Fay Text
 zebraStripeRows index _ = return $ if isDivisibleBy index 2 then "odd" else "even"
 
 addZebraStriping :: JQuery -> Fay JQuery

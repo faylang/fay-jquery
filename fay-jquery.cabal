@@ -16,4 +16,5 @@ data-files: src/JQuery.hs
 library
   hs-source-dirs: src
   exposed-modules: JQuery
-  build-depends: fay-base >= 0.14.1.0
+  build-depends: fay-base >= 0.17
+               , fay-text >= 0.1

@@ -1,5 +1,7 @@
 {-# LANGUAGE EmptyDataDecls    #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes        #-}
+{-# LANGUAGE RebindableSyntax  #-}
 
 module JQuery where
 
@@ -8,6 +10,7 @@ Note that this is very much in flux. Function names, type signatures, and
 data types all subject to drastic change.
 --}
 
+import           Fay.Text
 import           FFI
 import           Prelude
 
@@ -15,9 +18,9 @@ data JQuery
 
 data JQXHR
 
-type EventType = String
+type EventType = Text
 
-type Selector = String
+type Selector = Text
 
 
 -- Things that should go in fay or fay-dom
@@ -36,22 +39,22 @@ emptyCallback = const $ return ()
 ---- Ajax
 ----
 
-ajax :: String
+ajax :: Text
      -> (Automatic b -> Fay ())
-     -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
+     -> (JQXHR -> Maybe Text -> Maybe Text -> Fay ())
      -> Fay ()
 ajax ur succ err = ajax' $ defaultAjaxSettings
   { success = Defined succ
-  , data' = Undefined :: Defined String -- hackety hack
+  , data' = Undefined :: Defined Text -- hackety hack
   , error' = Defined err
   , url = Defined ur }
 
 -- | Serializes the given object to JSON and passes it as the request body without request parameters.
 --   The response is deserialized depending on its type.
-ajaxPost :: String
+ajaxPost :: Text
          -> Automatic f
          -> (Automatic g -> Fay ())
-         -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
+         -> (JQXHR -> Maybe Text -> Maybe Text -> Fay ())
          -> Fay ()
 ajaxPost ur dat succ err = ajax' $ defaultAjaxSettings
   { success = Defined succ
@@ -65,11 +68,11 @@ ajaxPost ur dat succ err = ajax' $ defaultAjaxSettings
   }
 
 -- | Same as ajaxPost but sends the data inside the given request parameter
-ajaxPostParam :: String
-              -> String
+ajaxPostParam :: Text
+              -> Text
               -> Automatic f
               -> (Automatic g -> Fay ())
-              -> (JQXHR -> Maybe String -> Maybe String -> Fay ())
+              -> (JQXHR -> Maybe Text -> Maybe Text -> Fay ())
               -> Fay ()
 ajaxPostParam ur rqparam dat succ err = ajax' $ defaultAjaxSettings
   { success = Defined succ
@@ -82,41 +85,41 @@ ajaxPostParam ur rqparam dat succ err = ajax' $ defaultAjaxSettings
   , dataType = Defined "json"
   }
 
-makeRqObj :: String -> a -> Object
+makeRqObj :: Text -> a -> Object
 makeRqObj = ffi "(function () { var o = {}; o[%1] = %2; return o; })()"
 
 data AjaxSettings a b = AjaxSettings
-  { accepts     :: Defined String
+  { accepts     :: Defined Text
   , async       :: Defined Bool
   , beforeSend  :: Defined (JQXHR -> AjaxSettings a b -> Fay ())
   , cache       :: Defined Bool
-  , complete    :: Defined (JQXHR -> String -> Fay ())
+  , complete    :: Defined (JQXHR -> Text -> Fay ())
   -- , contents :: Defined (Object RegExp) -- skipped
-  , contentType :: Defined String
+  , contentType :: Defined Text
   -- , context :: Defined Object -- skipped
   -- , converters :: Defined (Object Value) -- skipped
   , crossDomain :: Defined Bool
   , data'       :: Defined a
   -- , dataFilter  :: Defined (Data -> Type -> Fay ()) -- skipped
-  , dataType    :: Defined String
-  , error'      :: Defined (JQXHR -> Maybe String -> Maybe String -> Fay ())
+  , dataType    :: Defined Text
+  , error'      :: Defined (JQXHR -> Maybe Text -> Maybe Text -> Fay ())
   , global      :: Defined Bool
-  -- , headers :: Object String -- need generic objects
+  -- , headers :: Object Text -- need generic objects
   , ifModified  :: Defined Bool
   , isLocal     :: Defined Bool
   -- , jsonp -- skipped
   -- , jsonpCallback -- skipped
-  , mimeType    :: Defined String
-  , password    :: Defined String
+  , mimeType    :: Defined Text
+  , password    :: Defined Text
   , processData :: Defined Bool
   -- , scriptCharset -- skipped
   -- , statusCode -- skipped
   , success     :: Defined (b -> Fay ())
   , timeout     :: Defined Double
   -- , traditional -- skipped
-  , type'       :: Defined String
-  , url         :: Defined String
-  , username    :: Defined String
+  , type'       :: Defined Text
+  , url         :: Defined Text
+  , username    :: Defined Text
   -- , xhr :: XHR -- XHR needs to be added to fay-dom
   }
 
@@ -155,7 +158,6 @@ ajax' = ffi "\
         \ delete o[p]; \
       \ } \
     \ } \
-    \ console.log(o); \
     \ return jQuery.ajax(o); \
   \ })(%1)"
 
@@ -163,92 +165,92 @@ ajax' = ffi "\
 ---- Attributes
 ----
 
-addClass :: String -> JQuery -> Fay JQuery
+addClass :: Text -> JQuery -> Fay JQuery
 addClass = ffi "%2['addClass'](%1)"
 
 -- FIXME: https://github.com/chrisdone/fay/issues/38
-addClassWith :: (Double -> String -> Fay String) -> JQuery -> Fay JQuery
+addClassWith :: (Double -> Text -> Fay Text) -> JQuery -> Fay JQuery
 addClassWith = ffi "%2['addClass'](%1)"
 
-getAttr :: String -> JQuery -> Fay String
+getAttr :: Text -> JQuery -> Fay Text
 getAttr = ffi "%2['attr'](%1)"
 
-setAttr :: String -> String -> JQuery -> Fay JQuery
+setAttr :: Text -> Text -> JQuery -> Fay JQuery
 setAttr = ffi "%3['attr'](%1, %2)"
 
 -- TODO: setAttrs with map
 
-setAttrWith :: String -> (Double -> String -> Fay String) -> JQuery -> Fay JQuery
+setAttrWith :: Text -> (Double -> Text -> Fay Text) -> JQuery -> Fay JQuery
 setAttrWith = ffi "%3['attr'](%1, %2)"
 
-hasClass :: String -> JQuery -> Fay Bool
+hasClass :: Text -> JQuery -> Fay Bool
 hasClass = ffi "%2['hasClass'](%1)"
 
-getHtml :: JQuery -> Fay String
+getHtml :: JQuery -> Fay Text
 getHtml = ffi "%1['html']()"
 
-setHtml :: String -> JQuery -> Fay JQuery
+setHtml :: Text -> JQuery -> Fay JQuery
 setHtml = ffi "%2['html'](%1)"
 
-setHtmlWith :: (Double -> String -> Fay JQuery) -> JQuery -> Fay JQuery
+setHtmlWith :: (Double -> Text -> Fay JQuery) -> JQuery -> Fay JQuery
 setHtmlWith = ffi "%2['html'](%1)"
 
 -- TODO: html with props
 
-getProp :: String -> JQuery -> Fay String
+getProp :: Text -> JQuery -> Fay Text
 getProp = ffi "%2['prop'](%1)"
 
-setProp :: String -> String -> JQuery -> Fay JQuery
+setProp :: Text -> Text -> JQuery -> Fay JQuery
 setProp = ffi "%3['prop'](%1, %2)"
 
 -- TODO: setProp with map
 
-setPropWith :: String -> (Double -> String -> Fay String) -> JQuery -> Fay JQuery
+setPropWith :: Text -> (Double -> Text -> Fay Text) -> JQuery -> Fay JQuery
 setPropWith = ffi "%3['prop'](%1, %2)"
 
-removeAttr :: String -> JQuery -> Fay JQuery
+removeAttr :: Text -> JQuery -> Fay JQuery
 removeAttr = ffi "%2['removeAttr'](%1)"
 
-removeClass :: String -> JQuery -> Fay JQuery
+removeClass :: Text -> JQuery -> Fay JQuery
 removeClass = ffi "%2['removeClass'](%1)"
 
-removeClassWith :: (Double -> String -> Fay JQuery) -> JQuery -> Fay JQuery
+removeClassWith :: (Double -> Text -> Fay JQuery) -> JQuery -> Fay JQuery
 removeClassWith = ffi "%2['removeClass'](%1)"
 
-removeProp :: String -> JQuery -> Fay JQuery
+removeProp :: Text -> JQuery -> Fay JQuery
 removeProp = ffi "%2['removeProp'](%1)"
 
-toggleClass :: String -> JQuery -> Fay JQuery
+toggleClass :: Text -> JQuery -> Fay JQuery
 toggleClass = ffi "%2['toggleClass'](%1)"
 
-toggleClassBool :: String -> Bool -> JQuery -> Fay JQuery
+toggleClassBool :: Text -> Bool -> JQuery -> Fay JQuery
 toggleClassBool = ffi "%3['toggleClass'](%1, %2)"
 
 toggleAllClasses :: Bool -> JQuery -> Fay JQuery
 toggleAllClasses = ffi "%2['toggleClass'](%1)"
 
-toggleClassWith :: (Double -> String -> Bool -> Fay JQuery) -> JQuery -> Fay JQuery
+toggleClassWith :: (Double -> Text -> Bool -> Fay JQuery) -> JQuery -> Fay JQuery
 toggleClassWith = ffi "%2['toggleClass'](%1)"
 
-toggleClassBoolWith :: (Double -> String -> Bool -> Fay JQuery) -> Bool -> JQuery -> Fay JQuery
+toggleClassBoolWith :: (Double -> Text -> Bool -> Fay JQuery) -> Bool -> JQuery -> Fay JQuery
 toggleClassBoolWith = ffi "%3['toggleClass'](%1, %2)"
 
-getVal :: JQuery -> Fay String
+getVal :: JQuery -> Fay Text
 getVal = ffi "%1['val']()"
 
-setVal :: String -> JQuery -> Fay JQuery
+setVal :: Text -> JQuery -> Fay JQuery
 setVal = ffi "%2['val'](%1)"
 
-setValWith :: (Double -> String -> Fay JQuery) -> JQuery -> Fay JQuery
+setValWith :: (Double -> Text -> Fay JQuery) -> JQuery -> Fay JQuery
 setValWith = ffi "%2['val'](%1)"
 
-setText :: String -> JQuery -> Fay JQuery
+setText :: Text -> JQuery -> Fay JQuery
 setText = ffi "%2['text'](%1)"
 
-setTextWith :: (Double -> String -> Fay JQuery) -> JQuery -> Fay JQuery
+setTextWith :: (Double -> Text -> Fay JQuery) -> JQuery -> Fay JQuery
 setTextWith = ffi "%2['text'](%1)"
 
-getText :: JQuery -> Fay String
+getText :: JQuery -> Fay Text
 getText = ffi "%1['text']()"
 
 ----
@@ -265,13 +267,13 @@ selectElement = ffi "jQuery(%1)"
 selectObject :: a -> Fay JQuery
 selectObject = ffi "jQuery(%1)"
 
-select :: String -> Fay JQuery
+select :: Text -> Fay JQuery
 select = ffi "jQuery(%1)"
 
 selectEmpty :: Fay JQuery
 selectEmpty = ffi "jQuery()"
 
-createJQuery :: String -> a -> Fay JQuery
+createJQuery :: Text -> a -> Fay JQuery
 createJQuery = ffi "jQuery(%1, %2)"
 
 ready :: Fay () -> Fay ()
@@ -293,13 +295,13 @@ noConflictBool = ffi "jQuery['noConflict'](%1)"
 ---- CSS
 ----
 
-getCss :: String -> JQuery -> Fay String
+getCss :: Text -> JQuery -> Fay Text
 getCss = ffi "%2['css'](%1)"
 
-setCss :: String -> String -> JQuery -> Fay JQuery
+setCss :: Text -> Text -> JQuery -> Fay JQuery
 setCss = ffi "%3['css'](%1, %2)"
 
-setCssWith :: String -> (Double -> String -> Fay String) -> JQuery -> Fay JQuery
+setCssWith :: Text -> (Double -> Text -> Fay Text) -> JQuery -> Fay JQuery
 setCssWith = ffi "%3['css'](%1, %2)"
 
 getHeight :: JQuery -> Fay Double
@@ -592,7 +594,7 @@ isImmediatePropagationStopped = ffi "%1['isImmediatePropagationStopped']()"
 isPropagationStopped :: Event -> Fay Element
 isPropagationStopped = ffi "%1['isPropagationStopped']()"
 
-namespace :: Event -> Fay String
+namespace :: Event -> Fay Text
 namespace = ffi "%1['namespace']"
 
 pageX :: Event -> Fay Double
@@ -610,7 +612,7 @@ target = ffi "%1['target']"
 timeStamp :: Event -> Fay Double
 timeStamp = ffi "%1['timeStamp']"
 
-eventType :: Event -> Fay String
+eventType :: Event -> Fay Text
 eventType = ffi "%1['type']"
 
 which :: Event -> Fay Int
@@ -705,7 +707,7 @@ clone DeepWithDataAndEvents = ffi "%2['clone'](true, true)"
 detach :: JQuery -> Fay JQuery
 detach = ffi "%1['detach']()"
 
-detachSelector :: String -> JQuery -> Fay JQuery
+detachSelector :: Text -> JQuery -> Fay JQuery
 detachSelector = ffi "%2['detach'](%1)"
 
 empty :: JQuery -> Fay JQuery
@@ -729,14 +731,14 @@ prependTo = ffi "%2['prependTo'](%1)"
 remove :: JQuery -> Fay JQuery
 remove = ffi "%1['remove']()"
 
-removeSelector :: String -> JQuery -> Fay JQuery
+removeSelector :: Text -> JQuery -> Fay JQuery
 removeSelector = ffi "%2['remove'](%1)"
 
-replaceAll :: String -> JQuery -> Fay JQuery
+replaceAll :: Text -> JQuery -> Fay JQuery
 replaceAll = ffi "%2['replaceAll'](%1)"
 
 -- FIXME: create other forms of replaceWith
-replaceWith :: String -> JQuery -> Fay JQuery
+replaceWith :: Text -> JQuery -> Fay JQuery
 replaceWith = ffi "%2['replaceWith'](%1)"
 
 replaceWithJQuery :: JQuery -> JQuery -> Fay JQuery
@@ -750,25 +752,25 @@ unwrap :: JQuery -> Fay JQuery
 unwrap = ffi "%1['unwrap']()"
 
 -- FIXME: create other forms of wrap
-wrap :: String -> JQuery -> Fay JQuery
+wrap :: Text -> JQuery -> Fay JQuery
 wrap = ffi "%2['wrap'](%1)"
 
 wrapWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 wrapWith = ffi "%2['wrap'](%1)"
 
-wrapAllHtml :: String -> JQuery -> Fay JQuery
+wrapAllHtml :: Text -> JQuery -> Fay JQuery
 wrapAllHtml = ffi "%2['wrapAll'](%1)"
 
-wrapAllSelector :: String -> JQuery -> Fay JQuery
+wrapAllSelector :: Text -> JQuery -> Fay JQuery
 wrapAllSelector = ffi "%2['wrapAll'](%1)"
 
 wrapAllElement :: Element -> JQuery -> Fay JQuery
 wrapAllElement = ffi "%2['wrapAll'](%1)"
 
-wrapInnerHtml :: String -> JQuery -> Fay JQuery
+wrapInnerHtml :: Text -> JQuery -> Fay JQuery
 wrapInnerHtml = ffi "%2['wrapInner'](%1)"
 
-wrapInnerSelector :: String -> JQuery -> Fay JQuery
+wrapInnerSelector :: Text -> JQuery -> Fay JQuery
 wrapInnerSelector = ffi "%2['wrapInner'](%1)"
 
 wrapInnerElement :: Element -> JQuery -> Fay JQuery
@@ -800,19 +802,19 @@ wrapInnerElement = ffi "%2['wrapInner'](%1)"
 ----
 
 -- TODO: unify these under a typeclass?
-addSelector :: String -> JQuery -> Fay JQuery
+addSelector :: Text -> JQuery -> Fay JQuery
 addSelector = ffi "%2['add'](%1)"
 
 addElement :: Element -> JQuery -> Fay JQuery
 addElement = ffi "%2['add'](%1)"
 
-addHtml :: String -> JQuery -> Fay JQuery
+addHtml :: Text -> JQuery -> Fay JQuery
 addHtml = ffi "%2['add'](%1)"
 
 add :: JQuery -> JQuery -> Fay JQuery
 add = ffi "%2['add'](%1)"
 
-addSelectorWithContext :: String -> JQuery -> JQuery -> Fay JQuery
+addSelectorWithContext :: Text -> JQuery -> JQuery -> Fay JQuery
 addSelectorWithContext = ffi "%3['add'](%1, %2)"
 
 andSelf :: JQuery -> Fay JQuery
@@ -821,14 +823,14 @@ andSelf = ffi "%1['andSelf']()"
 children :: JQuery -> Fay JQuery
 children = ffi "%1['children']()"
 
-childrenMatching :: String -> JQuery -> Fay JQuery
+childrenMatching :: Text -> JQuery -> Fay JQuery
 childrenMatching = ffi "%2['children'](%1)"
 
-closestSelector :: String -> JQuery -> Fay JQuery
+closestSelector :: Text -> JQuery -> Fay JQuery
 closestSelector = ffi "%2['closest'](%1)"
 
 -- TODO: is context really a string?
-closestWithContext :: String -> String -> JQuery -> Fay JQuery
+closestWithContext :: Text -> Text -> JQuery -> Fay JQuery
 closestWithContext = ffi "%3['closest'](%1, %2)"
 
 closest :: JQuery -> JQuery -> Fay JQuery
@@ -852,7 +854,7 @@ end = ffi "%1['end']()"
 eq :: Double -> JQuery -> Fay JQuery
 eq = ffi "%2['eq'](%1)"
 
-filter :: String -> JQuery -> Fay JQuery
+filter :: Text -> JQuery -> Fay JQuery
 filter = ffi "%2['filter'](%1)"
 
 filterWith :: (Double -> Fay Bool) -> JQuery -> Fay JQuery
@@ -865,7 +867,7 @@ filterJQuery :: JQuery -> JQuery -> Fay JQuery
 filterJQuery = ffi "%2['filter'](%1)"
 
 -- FIXME: not called find because Fay doesn't seem to deal well with name conflicts yet
-findSelector :: String -> JQuery -> Fay JQuery
+findSelector :: Text -> JQuery -> Fay JQuery
 findSelector = ffi "%2['find'](%1)"
 
 findJQuery :: JQuery -> JQuery -> Fay JQuery
@@ -877,13 +879,13 @@ findElement = ffi "%2['find'](%1)"
 first :: JQuery -> Fay JQuery
 first = ffi "%1['first']()"
 
-has :: String -> JQuery -> Fay JQuery
+has :: Text -> JQuery -> Fay JQuery
 has = ffi "%2['has'](%1)"
 
 hasElement :: Element -> JQuery -> Fay JQuery
 hasElement = ffi "%2['has'](%1)"
 
-is :: String -> JQuery -> Fay JQuery
+is :: Text -> JQuery -> Fay JQuery
 is = ffi "%2['is'](%1)"
 
 isWith :: (Double -> Bool) -> JQuery -> Fay JQuery
@@ -905,28 +907,28 @@ jQueryMap = ffi "%2['map'](%1)"
 next :: JQuery -> Fay JQuery
 next = ffi "%1['next']()"
 
-nextSelector :: String -> JQuery -> Fay JQuery
+nextSelector :: Text -> JQuery -> Fay JQuery
 nextSelector = ffi "%2['next'](%1)"
 
 nextAll :: JQuery -> Fay JQuery
 nextAll = ffi "%1['nextAll']()"
 
-nextAllSelector :: String -> JQuery -> Fay JQuery
+nextAllSelector :: Text -> JQuery -> Fay JQuery
 nextAllSelector = ffi "%2['nextAll'](%1)"
 
-nextUntil :: String -> JQuery -> Fay JQuery
+nextUntil :: Text -> JQuery -> Fay JQuery
 nextUntil = ffi "%2['nextUntil'](%1)"
 
-nextUntilFiltered :: String -> String -> JQuery -> Fay JQuery
+nextUntilFiltered :: Text -> Text -> JQuery -> Fay JQuery
 nextUntilFiltered = ffi "%3['nextUntil'](%1, %2)"
 
 nextUntilElement :: Element -> JQuery -> Fay JQuery
 nextUntilElement = ffi "%2['nextUntil'](%1)"
 
-nextUntilElementFiltered :: Element -> String -> JQuery -> Fay JQuery
+nextUntilElementFiltered :: Element -> Text -> JQuery -> Fay JQuery
 nextUntilElementFiltered = ffi "%3['nextUntil'](%1, %2)"
 
-not :: String -> JQuery -> Fay JQuery
+not :: Text -> JQuery -> Fay JQuery
 not = ffi "%2['not'](%1)"
 
 notElement :: Element -> JQuery -> Fay JQuery
@@ -947,55 +949,55 @@ offsetParent = ffi "%1['offsetParent']()"
 parent :: JQuery -> Fay JQuery
 parent = ffi "%1['parent']()"
 
-parentSelector :: String -> JQuery -> Fay JQuery
+parentSelector :: Text -> JQuery -> Fay JQuery
 parentSelector = ffi "%2['parent'](%1)"
 
 parents :: JQuery -> Fay JQuery
 parents = ffi "%1['parents']()"
 
-parentsSelector :: String -> JQuery -> Fay JQuery
+parentsSelector :: Text -> JQuery -> Fay JQuery
 parentsSelector = ffi "%2['parents'](%1)"
 
-parentsUntil :: String -> JQuery -> Fay JQuery
+parentsUntil :: Text -> JQuery -> Fay JQuery
 parentsUntil = ffi "%2['parentsUntil'](%1)"
 
-parentsUntilFiltered :: String -> String -> JQuery -> Fay JQuery
+parentsUntilFiltered :: Text -> Text -> JQuery -> Fay JQuery
 parentsUntilFiltered = ffi "%3['parentsUntil'](%1, %2)"
 
 parentsUntilElement :: Element -> JQuery -> Fay JQuery
 parentsUntilElement = ffi "%2['parentsUntil'](%1)"
 
-parentsUntilElementFiltered :: Element -> String -> JQuery -> Fay JQuery
+parentsUntilElementFiltered :: Element -> Text -> JQuery -> Fay JQuery
 parentsUntilElementFiltered = ffi "%3['parentsUntil'](%1, %2)"
 
 prev :: JQuery -> Fay JQuery
 prev = ffi "%1['prev']()"
 
-prevSelector :: String -> JQuery -> Fay JQuery
+prevSelector :: Text -> JQuery -> Fay JQuery
 prevSelector = ffi "%2['prev'](%1)"
 
 prevAll :: JQuery -> Fay JQuery
 prevAll = ffi "%1['prevAll']()"
 
-prevAllSelector :: String -> JQuery -> Fay JQuery
+prevAllSelector :: Text -> JQuery -> Fay JQuery
 prevAllSelector = ffi "%2['prevAll'](%1)"
 
-prevUntil :: String -> JQuery -> Fay JQuery
+prevUntil :: Text -> JQuery -> Fay JQuery
 prevUntil = ffi "%2['prevUntil'](%1)"
 
-prevUntilFiltered :: String -> String -> JQuery -> Fay JQuery
+prevUntilFiltered :: Text -> Text -> JQuery -> Fay JQuery
 prevUntilFiltered = ffi "%3['prevUntil'](%1, %2)"
 
 prevUntilElement :: Element -> JQuery -> Fay JQuery
 prevUntilElement = ffi "%2['prevUntil'](%1)"
 
-prevUntilElementFiltered :: Element -> String -> JQuery -> Fay JQuery
+prevUntilElementFiltered :: Element -> Text -> JQuery -> Fay JQuery
 prevUntilElementFiltered = ffi "%3['prevUntil'](%1, %2)"
 
 siblings :: JQuery -> Fay JQuery
 siblings = ffi "%1['siblings']()"
 
-siblingsSelector :: String -> JQuery -> Fay JQuery
+siblingsSelector :: Text -> JQuery -> Fay JQuery
 siblingsSelector = ffi "%2['siblings'](%1)"
 
 slice :: Double -> JQuery -> Fay JQuery
@@ -1010,7 +1012,7 @@ data KeyCode = KeyUp
              | KeyRight
              | KeyRet
              | SomeKey Double
-  deriving (Show)
+--  deriving (Show)
 
 onKeycode :: (KeyCode -> Fay Bool) -> JQuery -> Fay JQuery
 onKeycode callback el = do
@@ -1064,3 +1066,6 @@ onLivechange = ffi "%2['livechange'](50,%1)"
 ----
 ---- Utilities
 ----
+
+fromInteger :: Integer -> Double
+fromInteger = ffi "%1"
