@@ -1,17 +1,23 @@
 name:                fay-jquery
-version:             0.3.0.0
-synopsis:            jQuery binding.
-description:         jQuery binding.
+version:             0.4.0.0
+synopsis:            jQuery bindings for Fay.
+description:         jQuery bindings for Fay.
 homepage:            https://github.com/faylang/fay-jquery
 bug-reports:         https://github.com/faylang/fay-jquery/issues
 license:             BSD3
 license-file:        LICENSE
 author:              Adam Bergmark, Brian Victor, Chris Done
-maintainer:          Chris Done <chrisdone@gmail.com>
+maintainer:          Adam Bergmark
 copyright:           Adam Bergmark, Brian Victor, Chris Done
+category:            Web, Fay
 build-type:          Simple
 cabal-version:       >=1.8
 data-files: src/JQuery.hs
+
+source-repository head
+  type: git
+  location: https://github.com/faylang/fay-jquery.git
+
 
 library
   hs-source-dirs: src
