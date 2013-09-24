@@ -7,7 +7,7 @@ module Test (main) where
 import FFI (ffi)
 import Fay.Text (Text, fromString)
 import JQuery
-import Prelude hiding (fromInteger)
+import Prelude
 
 (>=>)       :: (a -> Fay b) -> (b -> Fay c) -> (a -> Fay c)
 f >=> g     = \x -> f x >>= g

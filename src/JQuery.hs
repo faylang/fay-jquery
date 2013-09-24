@@ -12,7 +12,7 @@ data types all subject to drastic change.
 
 import           Fay.Text
 import           FFI
-import           Prelude  hiding (fromInteger)
+import           Prelude
 
 data JQuery
 
@@ -1061,11 +1061,3 @@ onLivechange = ffi "%2['livechange'](50,%1)"
 
 -- vim implementation shortcut
 -- inoremap <F6> <ESC>:normal 0ywo<ESC>pa= ffi ""<ESC>F"i
-
-
-----
----- Utilities
-----
-
-fromInteger :: Integer -> Double
-fromInteger = ffi "%1"
