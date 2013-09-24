@@ -1,5 +1,5 @@
 name:                fay-jquery
-version:             0.4.0.0
+version:             0.4.0.1
 synopsis:            jQuery bindings for Fay.
 description:         jQuery bindings for Fay.
 homepage:            https://github.com/faylang/fay-jquery
@@ -22,5 +22,5 @@ source-repository head
 library
   hs-source-dirs: src
   exposed-modules: JQuery
-  build-depends: fay-base >= 0.17
-               , fay-text >= 0.1
+  build-depends: fay-base >= 0.18
+               , fay-text >= 0.2
