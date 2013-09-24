@@ -12,7 +12,7 @@ data types all subject to drastic change.
 
 import           Fay.Text
 import           FFI
-import           Prelude
+import           Prelude  hiding (fromInteger)
 
 data JQuery
 
@@ -389,10 +389,10 @@ data AnimationType = Show | Hide | Toggle | FadeIn | FadeOut | FadeToggle
 data Speed = Instantly | Slow | Fast | Speed Double
 
 data Animation = Animation
-  { _type :: AnimationType
-  , _speed :: Speed
+  { _type          :: AnimationType
+  , _speed         :: Speed
   , _nextAnimation :: Maybe Animation
-  , _element :: JQuery
+  , _element       :: JQuery
   }
 
 anim :: AnimationType -> JQuery -> Animation
@@ -700,9 +700,10 @@ beforeWith = ffi "%2['before'](%1)"
 data CloneType = WithoutDataAndEvents | WithDataAndEvents | DeepWithDataAndEvents
 
 clone :: CloneType -> JQuery -> Fay JQuery
-clone WithoutDataAndEvents  = ffi "%2['clone'](false)"
-clone WithDataAndEvents     = ffi "%2['clone'](true, false)"
-clone DeepWithDataAndEvents = ffi "%2['clone'](true, true)"
+clone WithoutDataAndEvents  = ffi "%1['clone'](false)"       :: JQuery -> Fay JQuery
+clone WithDataAndEvents     = ffi "%1['clone'](true, false)" :: JQuery -> Fay JQuery
+clone DeepWithDataAndEvents = ffi "%1['clone'](true, true)"  :: JQuery -> Fay JQuery
+
 
 detach :: JQuery -> Fay JQuery
 detach = ffi "%1['detach']()"
@@ -1060,7 +1061,6 @@ onLivechange = ffi "%2['livechange'](50,%1)"
 
 -- vim implementation shortcut
 -- inoremap <F6> <ESC>:normal 0ywo<ESC>pa= ffi ""<ESC>F"i
-
 
 
 ----

@@ -4,18 +4,16 @@
 
 module Test (main) where
 
-import FFI
-import Fay.Text
+import FFI (ffi)
+import Fay.Text (Text, fromString)
 import JQuery
-import Prelude
+import Prelude hiding (fromInteger)
 
 (>=>)       :: (a -> Fay b) -> (b -> Fay c) -> (a -> Fay c)
 f >=> g     = \x -> f x >>= g
 
 myMapM            :: (a -> Fay b) -> [a] -> Fay [b]
 myMapM f as       =  mySequence (map f as)
-
-fail = undefined
 
 mySequence    :: [Fay a] -> Fay [a]
 mySequence ms = let k m m' = do { x <- m; xs <- m'; return (x:xs) } in
