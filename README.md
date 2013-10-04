@@ -1,8 +1,7 @@
 Fay jQuery
 ==========
 
-jQuery bindings for Fay. This project is experimental and not suitable for
-production purposes.
+jQuery bindings for Fay. This project is experimental, but seems to work pretty well!
 
 The short-term goals of this project are to help discover the real world
 requirements of Fay and to invite bikeshedding over the fay-jquery API. That
@@ -28,24 +27,23 @@ main = do
 Usage
 -----
 
-To use this with fay, cabal install the package which will put the
-source files in fay ~/.cabal/share/fay-jquery-0.1.0.0/src. You can then
-compile with fay using
 
-in fay >= 0.12:
+Install:
 ```bash
-fay --package fay-jquery MyFile.hs
+cabal install fay-text fay-jquery
 ```
 
-in fay < 0.12:
+Compile your file:
+
+```bash
+fay --package fay-jquery,fay-text MyFile.hs
 ```
-fay --include=~/.cabal/share/fay-jquery-0.1.0.0/src MyFile.hs
-```
+
 
 Supported API calls
 -------------------
 
-This binding is a work in progress. I'm adding calls by section of the jQuery
+This binding is a work in progress. We're adding calls by section of the jQuery
 docs. There is some overlap in the sections, but the following sections are
 (mostly) complete.
 
@@ -56,6 +54,7 @@ docs. There is some overlap in the sections, but the following sections are
 - Effects (Basic, Fading)
 - Manipulation
 - Traversing
+- Events
 
 Still to do
 -----------
@@ -63,7 +62,6 @@ Still to do
 - Data
 - Deferred Object
 - Effects (Custom, Sliding)
-- Events
 - Forms
 - Internals
 - Miscellaneous

@@ -12,7 +12,7 @@ data types all subject to drastic change.
 
 import           Fay.Text
 import           FFI
-import           Prelude
+import           Prelude hiding (succ)
 
 data JQuery
 
@@ -399,7 +399,7 @@ anim :: AnimationType -> JQuery -> Animation
 anim ty el = Animation ty Fast Nothing el
 
 speed :: Speed -> Animation -> Animation
-speed spd anim = anim { _speed = spd }
+speed spd ani = ani { _speed = spd }
 
 chainAnim :: Animation -> Animation -> Animation
 chainAnim a1 a2 = a1 { _nextAnimation = Just a2 }
@@ -407,6 +407,7 @@ chainAnim a1 a2 = a1 { _nextAnimation = Just a2 }
 chainAnims :: [Animation] -> Animation
 chainAnims [a] = a
 chainAnims (a:as) = a `chainAnim` chainAnims as
+chainAnims [] = error (unpack "chainAnims: empty list")
 
 runAnimation :: Animation -> Fay ()
 runAnimation a = do
