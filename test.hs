@@ -4,10 +4,9 @@
 
 module Test (main) where
 
-import FFI (ffi)
 import Fay.Text (Text, fromString)
 import JQuery
-import Prelude
+import Prelude hiding (div)
 
 (>=>)       :: (a -> Fay b) -> (b -> Fay c) -> (a -> Fay c)
 f >=> g     = \x -> f x >>= g
@@ -19,6 +18,7 @@ mySequence    :: [Fay a] -> Fay [a]
 mySequence ms = let k m m' = do { x <- m; xs <- m'; return (x:xs) } in
                 foldr k (return []) ms
 
+tableData :: [[Text]]
 tableData = [ ["S", "Soprano"]
             , ["A", "Alto"]
             , ["T", "Tenor"]
@@ -41,12 +41,6 @@ buildTable rowsData = do
     table <- select "<table/>"
     myMapM (buildRow >=> appendToJQuery table) rowsData
     return table
-
-dir :: a -> Fay JQuery
-dir = ffi "console.dir(%1)"
-
-clog :: Text -> Fay JQuery
-clog = ffi "console.log(%1)"
 
 main :: Fay ()
 main = ready $ do
@@ -72,7 +66,6 @@ testAnimations = do
   return ()
 
     where
-      empty = const $ return ()
       chainedAnimation el = chainAnims [speed Fast (anim Toggle el), speed Slow (anim Toggle el), anim FadeOut el, anim FadeIn el]
 
 data AjaxTest = AjaxTest Double Double
@@ -83,29 +76,9 @@ testAjax = do
   ajaxPost "http://www.example.com" (AjaxTest 1 2) putStrLn (\_ _ _ -> return ())
   ajaxPostParam "http://www.example.com" "foo" (AjaxTest 1 2) putStrLn (\_ _ _ -> return ())
 
-
-isDivisibleBy :: Double -> Double -> Bool
---isDivisibleBy num divisor = let divided = num/divisor in divided - (fromIntegral $ floor divided) == 0
---isDivisibleBy num divisor = (div (floor num) (floor divisor)) * (floor divisor) == (floor num)
-isDivisibleBy num divisor = if num == 0 then True
-                            else if num < 0 then False
-                            else isDivisibleBy (num - divisor) divisor
-
-zebraStripeRows :: Double -> Text -> Fay Text
-zebraStripeRows index _ = return $ if isDivisibleBy index 2 then "odd" else "even"
-
 addZebraStriping :: JQuery -> Fay JQuery
 addZebraStriping table = do
-    --addClassWith zebraStripeRows rows
     evenRows <- findSelector "tr:even" table
     addClass "even" evenRows
     oddRows <- findSelector "tr:odd" table
     addClass "odd" oddRows
-
-{--
-manipulateP :: JQuery -> Fay JQuery
-manipulateP = setText "It's been replaced!" >=>
-              --setStyle "background-color" "red" >=>
-              addClass "asdf" >=>
-              addClassWith addTableRowClasses
---}
