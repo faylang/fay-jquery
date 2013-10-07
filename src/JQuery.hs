@@ -892,7 +892,7 @@ hasElement = ffi "%2['has'](%1)"
 is :: Selectable a => a -> JQuery -> Fay Bool
 is = ffi "%2['is'](%1)"
 
-isWith :: (Double -> Bool) -> JQuery -> Fay JQuery
+isWith :: (Int -> Bool) -> JQuery -> Fay JQuery
 isWith = ffi "%2['is'](%1)"
 
 last :: JQuery -> Fay JQuery
