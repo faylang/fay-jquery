@@ -889,16 +889,16 @@ has = ffi "%2['has'](%1)"
 hasElement :: Element -> JQuery -> Fay JQuery
 hasElement = ffi "%2['has'](%1)"
 
-is :: Text -> JQuery -> Fay JQuery
+is :: Text -> JQuery -> Fay Bool
 is = ffi "%2['is'](%1)"
 
 isWith :: (Double -> Bool) -> JQuery -> Fay JQuery
 isWith = ffi "%2['is'](%1)"
 
-isJQuery :: JQuery -> JQuery -> Fay JQuery
+isJQuery :: JQuery -> JQuery -> Fay Bool
 isJQuery = ffi "%2['is'](%1)"
 
-isElement :: Element -> JQuery -> Fay JQuery
+isElement :: Element -> JQuery -> Fay Bool
 isElement = ffi "%2['is'](%1)"
 
 last :: JQuery -> Fay JQuery
