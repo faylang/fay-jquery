@@ -275,8 +275,8 @@ select = ffi "jQuery(%1)"
 selectEmpty :: Fay JQuery
 selectEmpty = ffi "jQuery()"
 
-createJQuery :: Text -> a -> Fay JQuery
-createJQuery = ffi "jQuery(%1, %2)"
+selectInContext :: (Selectable a, Selectable b) => a -> b -> Fay JQuery
+selectInContext = ffi "jQuery(%1, %2)"
 
 ready :: Fay () -> Fay ()
 ready = ffi "jQuery(%1)"
