@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes        #-}
 {-# LANGUAGE RebindableSyntax  #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 module JQuery where
 
@@ -261,13 +262,14 @@ holdReady :: Bool -> Fay JQuery
 holdReady = ffi "jQuery['holdReady'](%1)"
 
 -- jQuery()
-selectElement :: Element -> Fay JQuery
-selectElement = ffi "jQuery(%1)"
+-- http://api.jquery.com/jQuery/
+class Selectable a
 
-selectObject :: a -> Fay JQuery
-selectObject = ffi "jQuery(%1)"
+instance Selectable Text
+instance Selectable Element
+instance Selectable JQuery
 
-select :: Text -> Fay JQuery
+select :: Selectable a => a -> Fay JQuery
 select = ffi "jQuery(%1)"
 
 selectEmpty :: Fay JQuery
