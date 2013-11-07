@@ -7,7 +7,7 @@ bug-reports:         https://github.com/faylang/fay-jquery/issues
 license:             BSD3
 license-file:        LICENSE
 author:              Adam Bergmark, Brian Victor, Chris Done
-maintainer:          Adam Bergmark
+maintainer:          adam@bergmark.nl
 copyright:           Adam Bergmark, Brian Victor, Chris Done
 category:            Web, Fay
 build-type:          Simple
