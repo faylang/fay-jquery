@@ -12,6 +12,11 @@
 Bug fixes:
 * `is` now returns `Bool`
 
+### 0.4.0.1 (2013-09-24)
+
+* Fixed bug in definition of `clone`
+* Don't define `fromIntegral`.
+
 ### 0.4 (2013-08-27)
 
 * Updated to use fay-text, which fixes bugs in ajax FFI calls.
