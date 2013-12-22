@@ -173,7 +173,7 @@ addClass = ffi "%2['addClass'](%1)"
 addClassWith :: (Double -> Text -> Fay Text) -> JQuery -> Fay JQuery
 addClassWith = ffi "%2['addClass'](%1)"
 
-getAttr :: Text -> JQuery -> Fay Text
+getAttr :: Text -> JQuery -> Fay (Defined Text)
 getAttr = ffi "%2['attr'](%1)"
 
 setAttr :: Text -> Text -> JQuery -> Fay JQuery
