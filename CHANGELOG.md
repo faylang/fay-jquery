@@ -1,5 +1,10 @@
 ## Changelog
 
+### 0.6 (unreleased)
+
+* Constrain more free type variables to `Selectable`
+* Change `getAttr :: Text -> JQuery -> Fay Text` to `Text -> JQuery -> Fay (Defined Text)`
+
 ### 0.5 (2013-11-07)
 
 * Add `Selectable` typeclass (with instances for `Text`, `JQuery` and `Element`. `String` is not a valid instance.)
