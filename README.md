@@ -20,6 +20,8 @@ makeSquare = addClass "square" >=>
              setWidth 400 >=>
              setHeight 400
 
+-- `ready` is the same as jQuery(document).ready(%1); fay-jquery things will
+-- probably break if this is omitted!
 main :: Fay ()
 main = do
     makeSquare $ select "#elementToMakeSquare"
