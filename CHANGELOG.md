@@ -1,6 +1,6 @@
 ## Changelog
 
-### 0.6 (unreleased)
+### 0.6 (2013-12-26)
 
 * Constrain more free type variables to `Selectable`
 * Change `getAttr :: Text -> JQuery -> Fay Text` to `Text -> JQuery -> Fay (Defined Text)`
