@@ -23,7 +23,7 @@ makeSquare = addClass "square" >=>
 -- `ready` is the same as jQuery(document).ready(%1); fay-jquery things will
 -- probably break if this is omitted!
 main :: Fay ()
-main = do
+main = ready $ do
     makeSquare $ select "#elementToMakeSquare"
     return ()
 ```
