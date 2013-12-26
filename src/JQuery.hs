@@ -669,14 +669,13 @@ keyup = ffi "%2['keyup'](%1)"
 ---- Manipulation
 ----
 
--- Is there a better way to constrain the type here?
-after :: a -> JQuery -> Fay JQuery
+after :: Selectable => a -> JQuery -> Fay JQuery
 after = ffi "%2['after'](%1)"
 
 afterWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 afterWith = ffi "%2['after'](%1)"
 
-append :: a -> JQuery -> Fay JQuery
+append :: Selectable a => a -> JQuery -> Fay JQuery
 append = ffi "%2['append'](%1)"
 
 appendJQuery :: JQuery -> JQuery -> Fay JQuery
@@ -686,7 +685,7 @@ appendJQuery = ffi "%2['append'](%1)"
 appendWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 appendWith = ffi "%2['append'](%1)"
 
-appendTo :: a -> JQuery -> Fay JQuery
+appendTo :: Selectable a => a -> JQuery -> Fay JQuery
 appendTo = ffi "%2['appendTo'](%1)"
 
 appendToJQuery :: JQuery -> JQuery -> Fay JQuery
@@ -694,7 +693,7 @@ appendToJQuery = ffi "%2['appendTo'](%1)"
 
 
 
-before :: a -> JQuery -> Fay JQuery
+before :: Selectable a => a -> JQuery -> Fay JQuery
 before = ffi "%2['before'](%1)"
 
 beforeWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
@@ -717,19 +716,19 @@ detachSelector = ffi "%2['detach'](%1)"
 empty :: JQuery -> Fay JQuery
 empty = ffi "%1['empty']()"
 
-insertAfter :: a -> JQuery -> Fay JQuery
+insertAfter :: Selectable a => a -> JQuery -> Fay JQuery
 insertAfter = ffi "%2['insertAfter'](%1)"
 
-insertBefore :: a -> JQuery -> Fay JQuery
+insertBefore :: Selectable a => a -> JQuery -> Fay JQuery
 insertBefore = ffi "%2['insertBefore'](%1)"
 
-prepend :: a -> JQuery -> Fay JQuery
+prepend :: Selectable a => a -> JQuery -> Fay JQuery
 prepend = ffi "%2['prepend'](%1)"
 
 prependWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 prependWith = ffi "%2['prepend'](%1)"
 
-prependTo :: a -> JQuery -> Fay JQuery
+prependTo :: Selectable a => a -> JQuery -> Fay JQuery
 prependTo = ffi "%2['prependTo'](%1)"
 
 remove :: JQuery -> Fay JQuery
