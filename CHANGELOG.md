@@ -1,5 +1,9 @@
 ## Changelog
 
+#### 0.6.0.1 (2013-12-28)
+
+* Fix typo in constraint, fixes build
+
 ### 0.6 (2013-12-26)
 
 * Constrain more free type variables to `Selectable`
