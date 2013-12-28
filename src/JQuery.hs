@@ -669,7 +669,7 @@ keyup = ffi "%2['keyup'](%1)"
 ---- Manipulation
 ----
 
-after :: Selectable => a -> JQuery -> Fay JQuery
+after :: Selectable a => a -> JQuery -> Fay JQuery
 after = ffi "%2['after'](%1)"
 
 afterWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
