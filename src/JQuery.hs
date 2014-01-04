@@ -270,13 +270,13 @@ instance Selectable Element
 instance Selectable JQuery
 
 select :: Selectable a => a -> Fay JQuery
-select = ffi "jQuery(%1)"
+select = ffi "jQuery(Fay$$_(%1))"
 
 selectEmpty :: Fay JQuery
 selectEmpty = ffi "jQuery()"
 
 selectInContext :: (Selectable a, Selectable b) => a -> b -> Fay JQuery
-selectInContext = ffi "jQuery(%1, %2)"
+selectInContext = ffi "jQuery(Fay$$_(%1), Fay$$_(%2))"
 
 ready :: Fay () -> Fay ()
 ready = ffi "jQuery(%1)"
@@ -670,13 +670,13 @@ keyup = ffi "%2['keyup'](%1)"
 ----
 
 after :: Selectable a => a -> JQuery -> Fay JQuery
-after = ffi "%2['after'](%1)"
+after = ffi "%2['after'](Fay$$_(%1))"
 
 afterWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 afterWith = ffi "%2['after'](%1)"
 
 append :: Selectable a => a -> JQuery -> Fay JQuery
-append = ffi "%2['append'](%1)"
+append = ffi "%2['append'](Fay$$_(%1))"
 
 appendJQuery :: JQuery -> JQuery -> Fay JQuery
 appendJQuery = ffi "%2['append'](%1)"
@@ -686,7 +686,7 @@ appendWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 appendWith = ffi "%2['append'](%1)"
 
 appendTo :: Selectable a => a -> JQuery -> Fay JQuery
-appendTo = ffi "%2['appendTo'](%1)"
+appendTo = ffi "%2['appendTo'](Fay$$_(%1))"
 
 appendToJQuery :: JQuery -> JQuery -> Fay JQuery
 appendToJQuery = ffi "%2['appendTo'](%1)"
@@ -694,7 +694,7 @@ appendToJQuery = ffi "%2['appendTo'](%1)"
 
 
 before :: Selectable a => a -> JQuery -> Fay JQuery
-before = ffi "%2['before'](%1)"
+before = ffi "%2['before'](Fay$$_(%1))"
 
 beforeWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 beforeWith = ffi "%2['before'](%1)"
@@ -717,19 +717,19 @@ empty :: JQuery -> Fay JQuery
 empty = ffi "%1['empty']()"
 
 insertAfter :: Selectable a => a -> JQuery -> Fay JQuery
-insertAfter = ffi "%2['insertAfter'](%1)"
+insertAfter = ffi "%2['insertAfter'](Fay$$_(%1))"
 
 insertBefore :: Selectable a => a -> JQuery -> Fay JQuery
-insertBefore = ffi "%2['insertBefore'](%1)"
+insertBefore = ffi "%2['insertBefore'](Fay$$_(%1))"
 
 prepend :: Selectable a => a -> JQuery -> Fay JQuery
-prepend = ffi "%2['prepend'](%1)"
+prepend = ffi "%2['prepend'](Fay$$_(%1))"
 
 prependWith :: (Double -> Fay JQuery) -> JQuery -> Fay JQuery
 prependWith = ffi "%2['prepend'](%1)"
 
 prependTo :: Selectable a => a -> JQuery -> Fay JQuery
-prependTo = ffi "%2['prependTo'](%1)"
+prependTo = ffi "%2['prependTo'](Fay$$_(%1))"
 
 remove :: JQuery -> Fay JQuery
 remove = ffi "%1['remove']()"
@@ -889,7 +889,7 @@ hasElement :: Element -> JQuery -> Fay JQuery
 hasElement = ffi "%2['has'](%1)"
 
 is :: Selectable a => a -> JQuery -> Fay Bool
-is = ffi "%2['is'](%1)"
+is = ffi "%2['is'](Fay$$_(%1))"
 
 isWith :: (Int -> Bool) -> JQuery -> Fay JQuery
 isWith = ffi "%2['is'](%1)"
