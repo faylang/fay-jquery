@@ -1,5 +1,9 @@
 ## Changelog
 
+#### 0.6.0.2 (2013-01-06)
+
+* Bug fix: Force thunks on polymorphic arguments such as `a` in `append :: Selectable a => a -> JQuery -> Fay JQuery`. Previously only constant values would be passed to jQuery correctly for these arguments.
+
 #### 0.6.0.1 (2013-12-28)
 
 * Fix typo in constraint, fixes build
