@@ -7,6 +7,7 @@ module Test (main) where
 import Fay.Text (Text, fromString)
 import JQuery
 import Prelude hiding (div)
+import qualified Fay.Text as T
 
 (>=>)       :: (a -> Fay b) -> (b -> Fay c) -> (a -> Fay c)
 f >=> g     = \x -> f x >>= g
@@ -63,6 +64,7 @@ testAnimations = do
   select "<input type='button' value='Show instantly'>" >>= click (const $ jshow Instantly thing >> return ()) >>= appendTo container
   select "<input type='button' value='Toggle 100'>" >>= click (const $ toggle (Speed 100) thing >> return ()) >>= appendTo container
   select "<input type='button' value='Chained'>" >>= click (const $ runAnimation $ chainedAnimation thing) >>= appendTo container
+  select ("<div>" `T.append` "Thunk" `T.append` "</div>") >>= appendTo body
   return ()
 
     where
