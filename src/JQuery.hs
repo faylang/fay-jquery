@@ -169,7 +169,6 @@ ajax' = ffi "\
 addClass :: Text -> JQuery -> Fay JQuery
 addClass = ffi "%2['addClass'](%1)"
 
--- FIXME: https://github.com/chrisdone/fay/issues/38
 addClassWith :: (Double -> Text -> Fay Text) -> JQuery -> Fay JQuery
 addClassWith = ffi "%2['addClass'](%1)"
 
