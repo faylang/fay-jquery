@@ -9,9 +9,6 @@ import JQuery
 import Prelude hiding (div)
 import qualified Fay.Text as T
 
-(>=>)       :: (a -> Fay b) -> (b -> Fay c) -> (a -> Fay c)
-f >=> g     = \x -> f x >>= g
-
 myMapM            :: (a -> Fay b) -> [a] -> Fay [b]
 myMapM f as       =  mySequence (map f as)
 
