@@ -2,6 +2,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RebindableSyntax  #-}
 
+-- Compile with: fay --package fay-text,fay-jquery test.hs --pretty
+
 module Test (main) where
 
 import Fay.Text (Text, fromString)
