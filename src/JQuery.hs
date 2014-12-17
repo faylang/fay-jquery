@@ -159,6 +159,7 @@ ajax' = ffi "\
         \ delete o[p]; \
       \ } \
     \ } \
+    \ o['data'] = JSON.stringify(o['data']); \
     \ return jQuery.ajax(o); \
   \ })(%1)"
 
