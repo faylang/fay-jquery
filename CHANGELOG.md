@@ -1,5 +1,9 @@
 ## Changelog
 
+#### 0.6.0.3 (2015-01-05)
+
+* Bug fix: Serialize ajax post bodies using JSON.stringify.
+
 #### 0.6.0.2 (2014-01-06)
 
 * Bug fix: Force thunks on polymorphic arguments such as `a` in `append :: Selectable a => a -> JQuery -> Fay JQuery`. Previously only constant values would be passed to jQuery correctly for these arguments.
