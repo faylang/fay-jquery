@@ -1,5 +1,9 @@
 ## Changelog
 
+### 0.6.1
+
+* Add `currentTarget` thanks to Jelle Hermsen
+
 #### 0.6.0.3 (2015-01-05)
 
 * Bug fix: Serialize ajax post bodies using JSON.stringify.
