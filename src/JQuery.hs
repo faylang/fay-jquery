@@ -612,6 +612,9 @@ preventDefault = ffi "%1['preventDefault']()"
 target :: Event -> Fay Element
 target = ffi "%1['target']"
 
+currentTarget :: Event -> Fay Element
+currentTarget = ffi "%1['currentTarget']"
+
 timeStamp :: Event -> Fay Double
 timeStamp = ffi "%1['timeStamp']"
 
