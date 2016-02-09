@@ -1,5 +1,5 @@
 name:                fay-jquery
-version:             0.6.1
+version:             0.6.1.0
 synopsis:            jQuery bindings for Fay.
 description:         jQuery bindings for Fay.
 homepage:            https://github.com/faylang/fay-jquery

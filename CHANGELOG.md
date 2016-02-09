@@ -1,6 +1,6 @@
 ## Changelog
 
-### 0.6.1
+### 0.6.1.0
 
 * Add `currentTarget` thanks to Jelle Hermsen
 
